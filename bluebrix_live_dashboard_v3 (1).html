@@ -1,0 +1,1207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>blueBrix · Deal Journey Dashboard</title>
+<!-- GitHub DB version -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg:#f5f4f0; --surface:#fff; --surface2:#f0efe9;
+  --border:rgba(0,0,0,.07); --border-md:rgba(0,0,0,.12); --border-strong:rgba(0,0,0,.18);
+  --text:#1a1a18; --text-2:#52524e; --text-3:#9b9b96;
+  --green:#1a9e6e; --green-dk:#137a55; --green-lt:#e8f7f1; --green-tx:#0e5c3f;
+  --blue:#1a5fa8; --blue-lt:#e6f0fb;
+  --amber:#8a4f0a; --amber-lt:#fdf0e0;
+  --red:#a82828; --red-lt:#fbeaea;
+  --purple:#4a3ab5; --purple-lt:#eeedfc;
+  --radius:9px; --radius-lg:13px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
+
+/* TOP BAR */
+.topbar{background:var(--surface);border-bottom:1px solid var(--border-md);padding:0 1.75rem;display:flex;align-items:center;gap:10px;height:56px;position:sticky;top:0;z-index:200;flex-wrap:nowrap}
+.logo{font-size:15px;font-weight:600;letter-spacing:-.4px;white-space:nowrap;margin-right:4px}
+.logo em{color:var(--green);font-style:normal}
+.divider{width:1px;height:20px;background:var(--border-md);flex-shrink:0}
+.ctrl-label{font-size:10.5px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);white-space:nowrap}
+.hs-select{appearance:none;background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%239b9b96' d='M0 0l5 6 5-6z'/%3E%3C/svg%3E") no-repeat right 10px center;border:1px solid var(--border-md);border-radius:var(--radius);padding:6px 28px 6px 11px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text);cursor:pointer;white-space:nowrap}
+.hs-select:focus{outline:none;border-color:var(--green)}
+.date-group{display:flex;align-items:center;gap:6px}
+.date-sep{font-size:11px;color:var(--text-3)}
+.date-input{border:1px solid var(--border-md);border-radius:var(--radius);padding:6px 10px;font-size:12px;font-family:'DM Mono',monospace;color:var(--text);background:var(--surface2);width:122px}
+.date-input:focus{outline:none;border-color:var(--green)}
+.tb-spacer{flex:1}
+.sync-meta{text-align:right;white-space:nowrap}
+.sync-meta-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3)}
+.sync-meta-val{font-size:11.5px;font-weight:500;color:var(--text-2);font-family:'DM Mono',monospace}
+.sync-btn{display:flex;align-items:center;gap:7px;background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:8px 16px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s;white-space:nowrap;flex-shrink:0}
+.sync-btn:hover{background:var(--green-dk);transform:translateY(-1px);box-shadow:0 4px 14px rgba(26,158,110,.28)}
+.sync-btn:active{transform:none}
+.sync-btn:disabled{background:#aaa;cursor:not-allowed;transform:none;box-shadow:none}
+.sync-btn svg{width:13px;height:13px;flex-shrink:0}
+.sync-btn.spinning svg{animation:spin .9s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TOKEN PROMPT */
+.overlay{display:none;position:fixed;inset:0;background:rgba(245,244,240,.88);backdrop-filter:blur(6px);z-index:500;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.prompt-card{background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;padding:2rem 2.25rem;width:480px;box-shadow:0 24px 64px rgba(0,0,0,.12)}
+.prompt-card h2{font-size:17px;font-weight:600;margin-bottom:6px}
+.prompt-card p{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:1.1rem}
+.prompt-card a{color:var(--green);text-decoration:none}
+.prompt-steps{background:var(--surface2);border-radius:var(--radius);padding:14px 16px;margin-bottom:1.1rem}
+.prompt-steps li{font-size:12.5px;color:var(--text-2);line-height:1.7;margin-left:1rem}
+.prompt-steps code{background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;font-size:11.5px}
+.inp-wrap{position:relative;margin-bottom:.85rem}
+.token-inp{width:100%;padding:10px 40px 10px 12px;border:1px solid var(--border-md);border-radius:var(--radius);font-size:12.5px;font-family:'DM Mono',monospace;background:var(--surface2);color:var(--text)}
+.token-inp:focus{outline:none;border-color:var(--green)}
+.vis-toggle{position:absolute;right:10px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:11px;color:var(--text-3);font-family:'DM Sans',sans-serif}
+.prompt-actions{display:flex;gap:8px}
+.btn-primary{flex:1;background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:9px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.btn-primary:hover{background:var(--green-dk)}
+.btn-ghost{flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border-md);border-radius:var(--radius);padding:9px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.prompt-note{font-size:11px;color:var(--text-3);margin-top:.75rem;line-height:1.55}
+
+/* SYNC OVERLAY */
+.sync-overlay{display:none;position:fixed;inset:0;background:rgba(245,244,240,.88);backdrop-filter:blur(6px);z-index:400;align-items:center;justify-content:center;flex-direction:column}
+.sync-overlay.show{display:flex}
+.sync-card{background:var(--surface);border:1px solid var(--border-md);border-radius:16px;padding:2rem 2.5rem;text-align:center;width:400px;box-shadow:0 20px 60px rgba(0,0,0,.1)}
+.sync-spinner{width:42px;height:42px;border:3px solid var(--surface2);border-top-color:var(--green);border-radius:50%;animation:spin .75s linear infinite;margin:0 auto 1.1rem}
+.sync-title{font-size:15px;font-weight:600;margin-bottom:5px}
+.sync-step{font-size:12.5px;color:var(--text-2);line-height:1.6;min-height:38px}
+.sync-bar{height:3px;background:var(--surface2);border-radius:2px;margin-top:1.1rem;overflow:hidden}
+.sync-fill{height:100%;background:var(--green);border-radius:2px;transition:width .35s ease;width:0%}
+.sync-log{text-align:left;margin-top:.85rem;font-size:11px;font-family:'DM Mono',monospace;color:var(--text-3);max-height:100px;overflow-y:auto}
+.sync-log .ok{color:var(--green)}
+.sync-log .er{color:var(--red)}
+
+/* BANNER */
+.banner{display:none;align-items:center;gap:10px;padding:9px 14px;border-radius:var(--radius);font-size:12.5px;font-weight:500;margin-bottom:1.1rem}
+.banner.ok{display:flex;background:var(--green-lt);color:var(--green-tx);border:1px solid #9FE1CB}
+.banner.err{display:flex;background:var(--red-lt);color:var(--red);border:1px solid #F09595}
+.banner.info{display:flex;background:var(--blue-lt);color:var(--blue);border:1px solid #B5D4F4}
+.banner-x{margin-left:auto;cursor:pointer;opacity:.5;font-size:15px;line-height:1}
+
+/* SAVE INDICATOR */
+.saving-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);animation:pulse .8s ease infinite;margin-left:6px;vertical-align:middle}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* MAIN */
+.main{max-width:1360px;margin:0 auto;padding:1.6rem 1.75rem}
+
+/* METRICS */
+.metric-row{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:1.4rem}
+.metric{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.85rem 1rem}
+.metric-val{font-size:23px;font-weight:600;color:var(--text);line-height:1.1}
+.metric-lbl{font-size:12px;color:var(--text-2);margin-top:4px}
+.metric-sub{font-size:11px;color:var(--text-3);margin-top:2px;font-family:'DM Mono',monospace}
+
+/* TABS */
+.tabs{display:flex;gap:4px;margin-bottom:1.15rem}
+.tab{padding:7px 15px;border-radius:var(--radius);border:1px solid var(--border-md);font-size:12.5px;cursor:pointer;background:var(--surface);color:var(--text-2);font-family:'DM Sans',sans-serif;transition:all .15s}
+.tab:hover{background:var(--surface2)}
+.tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+
+/* CARDS */
+.charts-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.15rem}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.2rem;margin-bottom:1.15rem}
+.card:last-child{margin-bottom:0}
+.card-title{font-size:12.5px;font-weight:500;color:var(--text-2);margin-bottom:.7rem}
+
+/* INSIGHTS */
+.insights-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.4rem;margin-bottom:1.15rem}
+.ins-header{display:flex;align-items:flex-start;gap:11px;margin-bottom:.9rem}
+.ins-icon{width:30px;height:30px;border-radius:8px;background:var(--green-lt);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0;margin-top:1px}
+.ins-title{font-size:13.5px;font-weight:600}
+.ins-sub{font-size:10.5px;color:var(--text-3);margin-top:2px;font-family:'DM Mono',monospace}
+.ins-summary{font-size:12.5px;color:#333;line-height:1.75;margin-bottom:.9rem;padding:13px 15px;background:var(--surface2);border-radius:var(--radius);border-left:3px solid var(--green)}
+.ins-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ins-card{border-radius:var(--radius);padding:11px 13px;border:1px solid transparent}
+.ins-card-lbl{font-size:9.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;margin-bottom:5px}
+.ins-card-txt{font-size:11.5px;line-height:1.65;color:#333}
+.ic-g{background:#f1faf5;border-color:#9FE1CB}.ic-g .ins-card-lbl{color:var(--green-tx)}
+.ic-b{background:#eff5fd;border-color:#B5D4F4}.ic-b .ins-card-lbl{color:var(--blue)}
+.ic-a{background:#fdf5e8;border-color:#FAC775}.ic-a .ins-card-lbl{color:var(--amber)}
+.ic-r{background:#fdf0f0;border-color:#F09595}.ic-r .ins-card-lbl{color:var(--red)}
+.ic-p{background:#f3f2fe;border-color:#AFA9EC}.ic-p .ins-card-lbl{color:var(--purple)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+.deal-table{width:100%;border-collapse:collapse;min-width:1200px}
+.deal-table th{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);padding:0 8px 8px;text-align:left;border-bottom:1px solid var(--border-md);white-space:nowrap}
+.deal-table th.editable-col{color:var(--green-tx);background:linear-gradient(to bottom,rgba(26,158,110,.04),transparent)}
+.deal-table td{font-size:11.5px;padding:7px 8px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle;line-height:1.5}
+.deal-table tr:last-child td{border-bottom:none}
+.deal-table tr:hover td{background:var(--surface2)}
+.sec-div td{font-size:9.5px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--text-3);padding:6px 8px;background:var(--surface2);border-bottom:1px solid var(--border)}
+
+/* EDITABLE DROPDOWNS IN TABLE */
+.edit-select{
+  appearance:none;
+  background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath fill='%239b9b96' d='M0 0l4 5 4-5z'/%3E%3C/svg%3E") no-repeat right 7px center;
+  background-size:8px;
+  border:1px solid var(--border-md);
+  border-radius:6px;
+  padding:4px 22px 4px 8px;
+  font-size:11px;
+  font-family:'DM Sans',sans-serif;
+  color:var(--text);
+  cursor:pointer;
+  width:100%;
+  min-width:140px;
+  transition:border-color .15s,box-shadow .15s;
+}
+.edit-select:hover{border-color:var(--green)}
+.edit-select:focus{outline:none;border-color:var(--green);box-shadow:0 0 0 3px rgba(26,158,110,.15)}
+.edit-select.saving{border-color:var(--amber);opacity:.7;pointer-events:none}
+.edit-select.saved{border-color:var(--green);background-color:var(--green-lt)}
+.edit-select option[value=""]{color:var(--text-3)}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 7px;border-radius:5px;font-size:10.5px;font-weight:500;white-space:nowrap}
+.b-organic{background:var(--green-lt);color:var(--green-tx)}
+.b-paid{background:var(--blue-lt);color:var(--blue)}
+.b-social{background:var(--purple-lt);color:var(--purple)}
+.b-direct{background:var(--amber-lt);color:var(--amber)}
+.b-offline{background:#F1EFE8;color:#5F5E5A}
+.b-swadv{background:#FBEAF0;color:#72243E}
+.b-sql{background:var(--blue-lt);color:var(--blue)}
+.b-demo{background:#E1F5EE;color:#0F6E56}
+.b-opp{background:var(--purple-lt);color:var(--purple)}
+.b-active{background:var(--green-lt);color:var(--green-tx)}
+.b-won{background:var(--green-lt);color:var(--green-tx)}
+.b-lost{background:var(--red-lt);color:var(--red)}
+.b-hold{background:var(--amber-lt);color:var(--amber)}
+.b-ent{background:var(--purple-lt);color:var(--purple)}
+.b-large{background:var(--blue-lt);color:var(--blue)}
+.b-med{background:var(--amber-lt);color:var(--amber)}
+.b-small{background:var(--green-lt);color:var(--green-tx)}
+
+/* MISC */
+.legend-row{display:flex;flex-wrap:wrap;gap:11px;margin-bottom:.7rem}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--text-2)}
+.leg-dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.bar-wrap{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bar-lbl{font-size:11.5px;color:var(--text-2);width:175px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bar-track{flex:1;background:var(--surface2);border-radius:4px;height:17px;overflow:hidden}
+.bar-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:6px;font-size:10.5px;font-weight:500}
+.funnel-step{display:flex;align-items:center;gap:9px;margin-bottom:8px}
+.funnel-lbl{font-size:11.5px;color:var(--text-2);width:155px;flex-shrink:0}
+.funnel-bar{height:26px;border-radius:5px;display:flex;align-items:center;padding:0 11px;font-size:11.5px;font-weight:500}
+.muted{color:var(--text-3);font-size:10.5px}
+.stage-panel{display:none}
+.stage-panel.active{display:block}
+.tab-content{display:none}
+.tab-content.active{display:block}
+
+/* CORS NOTE */
+.cors-note{background:#fffbeb;border:1px solid #FAC775;border-radius:var(--radius);padding:10px 14px;font-size:12px;color:var(--amber);line-height:1.6;margin-bottom:1.1rem;display:none}
+.cors-note.show{display:block}
+
+/* Col header badge */
+.col-badge{display:inline-block;font-size:8px;font-weight:600;padding:1px 5px;border-radius:3px;background:var(--green-lt);color:var(--green-tx);letter-spacing:.05em;text-transform:uppercase;margin-left:4px;vertical-align:middle}
+
+/* DB STATUS BAR */
+.db-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:5px 1.75rem;display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--text-2)}
+.db-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
+.db-dot.ok{background:var(--green)}.db-dot.err{background:var(--red)}.db-dot.loading{background:var(--amber);animation:ghp .8s infinite}
+@keyframes ghp{0%,100%{opacity:1}50%{opacity:.35}}
+.db-action{margin-left:auto;font-size:11px;color:var(--green);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:0}
+.gh-overlay{display:none;position:fixed;inset:0;background:rgba(245,244,240,.92);backdrop-filter:blur(6px);z-index:600;align-items:center;justify-content:center;padding:1rem}
+.gh-overlay.show{display:flex}
+.gh-card{background:var(--surface);border:1px solid var(--border-strong);border-radius:16px;padding:2rem 2.25rem;width:500px;max-height:90vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.14)}
+.gh-card h2{font-size:17px;font-weight:600;margin-bottom:8px}
+.gh-card p{font-size:13px;color:var(--text-2);line-height:1.65;margin-bottom:.9rem}
+.gh-card a{color:var(--green);text-decoration:none}
+.gh-tabs{display:flex;gap:4px;margin-bottom:1rem}
+.gh-tab{padding:6px 14px;border-radius:6px;border:1px solid var(--border-md);font-size:12px;cursor:pointer;background:var(--surface2);color:var(--text-2);font-family:'DM Sans',sans-serif}
+.gh-tab.active{background:var(--text);color:#fff;border-color:var(--text)}
+.gh-pane{display:none}.gh-pane.active{display:block}
+.gh-field{margin-bottom:.9rem}
+.gh-field label{display:block;font-size:11.5px;font-weight:500;color:var(--text-2);margin-bottom:4px}
+.gh-inp{width:100%;padding:9px 12px;border:1px solid var(--border-md);border-radius:var(--radius);font-size:12.5px;font-family:'DM Mono',monospace;background:var(--surface2);color:var(--text)}
+.gh-inp:focus{outline:none;border-color:var(--green)}
+.gh-inp-row{display:flex;gap:7px}.gh-inp-row .gh-inp{flex:1}
+.gh-vis{background:var(--surface2);border:1px solid var(--border-md);border-radius:var(--radius);padding:9px 11px;font-size:11px;color:var(--text-3);cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap}
+.gh-steps{background:var(--surface2);border-radius:var(--radius);padding:11px 14px;margin-bottom:.9rem;font-size:12px;color:var(--text-2);line-height:1.7}
+.gh-steps ol{margin-left:1rem}.gh-steps li{margin-bottom:2px}
+.gh-steps code{background:rgba(0,0,0,.07);padding:1px 4px;border-radius:3px;font-size:11px}
+.gh-actions{display:flex;gap:8px;margin-top:.5rem}
+.gh-primary{flex:1;background:var(--green);color:#fff;border:none;border-radius:var(--radius);padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.gh-primary:hover{background:var(--green-dk)}
+.gh-ghost{flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border-md);border-radius:var(--radius);padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
+.gh-note{font-size:11px;color:var(--text-3);margin-top:.7rem;line-height:1.55}
+</style>
+</head>
+<body>
+
+<!-- GITHUB SETUP OVERLAY -->
+<div class="gh-overlay" id="ghOverlay">
+  <div class="gh-card">
+    <h2>⚙️ Dashboard setup</h2>
+    <p>This dashboard uses your GitHub repo as a live database. Deal data is stored in <code>data/deals.json</code> inside your repo and synced from HubSpot. Takes 3 minutes to set up.</p>
+    <div class="gh-tabs">
+      <button class="gh-tab active" onclick="ghTab('repo')">1 · GitHub repo</button>
+      <button class="gh-tab" onclick="ghTab('ghtoken')">2 · GitHub token</button>
+      <button class="gh-tab" onclick="ghTab('hstoken')">3 · HubSpot token</button>
+    </div>
+    <div id="gh-pane-repo" class="gh-pane active">
+      <div class="gh-field"><label>Your GitHub username</label><input class="gh-inp" id="gh-user" type="text" placeholder="e.g. kapilnandakumar" /></div>
+      <div class="gh-field"><label>Your GitHub repository name</label><input class="gh-inp" id="gh-repo" type="text" placeholder="e.g. bluebrix-dashboard" /></div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:-.3rem">Your live URL: <code>https://&lt;username&gt;.github.io/&lt;repo&gt;</code></p>
+    </div>
+    <div id="gh-pane-ghtoken" class="gh-pane">
+      <div class="gh-steps"><ol>
+        <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></li>
+        <li>Name it <strong>blueBrix Dashboard</strong></li>
+        <li>Expiration → <strong>No expiration</strong></li>
+        <li>Under Scopes → tick <strong><code>repo</code></strong></li>
+        <li>Click <strong>Generate token</strong> → copy it</li>
+      </ol></div>
+      <div class="gh-field"><label>GitHub Personal Access Token <code>ghp_...</code></label>
+        <div class="gh-inp-row"><input class="gh-inp" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('gh-token',this)">show</button></div>
+      </div>
+      <p style="font-size:11px;color:var(--text-3)">This lets the Sync button write <code>data/deals.json</code> to your repo. Stored only in your browser.</p>
+    </div>
+    <div id="gh-pane-hstoken" class="gh-pane">
+      <div class="gh-steps"><ol>
+        <li>Go to <a href="https://app.hubspot.com/integrations-settings/3411399/private-apps" target="_blank">HubSpot → Settings → Private Apps</a></li>
+        <li>Create app → name it <strong>blueBrix Dashboard</strong></li>
+        <li>Scopes: <code>crm.objects.deals.read</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.contacts.read</code>, <code>crm.schemas.deals.write</code></li>
+        <li>Create app → copy token (starts with <code>pat-na1-</code>)</li>
+      </ol></div>
+      <div class="gh-field"><label>HubSpot Private App Token <code>pat-na1-...</code></label>
+        <div class="gh-inp-row"><input class="gh-inp" id="hs-token-inp" type="password" placeholder="pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('hs-token-inp',this)">show</button></div>
+      </div>
+    </div>
+    <div class="gh-actions">
+      <button class="gh-primary" onclick="ghSaveSetup()">Save &amp; sync now</button>
+      <button class="gh-ghost" onclick="ghCloseSetup()">Load data only</button>
+    </div>
+    <p class="gh-note">⚠ All tokens stored in localStorage only. Never sent anywhere except directly to api.github.com and api.hubapi.com. Do not use on a shared computer — for team deployments, use a backend proxy instead.</p>
+  </div>
+</div>
+
+<!-- DB STATUS BAR -->
+<div class="db-bar" id="dbBar">
+  <div class="db-dot loading" id="dbDot"></div>
+  <span id="dbMsg">Loading data from GitHub...</span>
+  <button class="db-action" onclick="ghOpenSetup()">⚙ Settings</button>
+</div>
+
+<!-- GITHUB SETUP OVERLAY -->
+<div class="gh-overlay" id="ghOverlay">
+  <div class="gh-card">
+    <h2>&#9881;&#65039; Dashboard setup</h2>
+    <p>This dashboard stores deal data in <code>data/deals.json</code> inside your GitHub repo — a free, permanent database. Syncs from HubSpot on demand. Takes 3 minutes to set up.</p>
+    <div class="gh-tabs">
+      <button class="gh-tab active" onclick="ghTab('repo')">1 &middot; GitHub repo</button>
+      <button class="gh-tab" onclick="ghTab('ghtoken')">2 &middot; GitHub token</button>
+      <button class="gh-tab" onclick="ghTab('hstoken')">3 &middot; HubSpot token</button>
+    </div>
+    <div id="gh-pane-repo" class="gh-pane active">
+      <div class="gh-field"><label>Your GitHub username</label><input class="gh-inp" id="gh-user" type="text" placeholder="e.g. kapilnandakumar" /></div>
+      <div class="gh-field"><label>Your GitHub repository name</label><input class="gh-inp" id="gh-repo" type="text" placeholder="e.g. bluebrix-dashboard" /></div>
+      <p style="font-size:12px;color:var(--text-3);margin-top:-.3rem">Your live URL will be: <strong>https://&lt;username&gt;.github.io/&lt;repo&gt;</strong></p>
+    </div>
+    <div id="gh-pane-ghtoken" class="gh-pane">
+      <div class="gh-steps"><ol>
+        <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></li>
+        <li>Name it <strong>blueBrix Dashboard</strong></li>
+        <li>Expiration &rarr; <strong>No expiration</strong></li>
+        <li>Under Scopes &rarr; tick <strong><code>repo</code></strong> (full repository access)</li>
+        <li>Click <strong>Generate token</strong> &rarr; copy it (starts with <code>ghp_</code>)</li>
+      </ol></div>
+      <div class="gh-field"><label>GitHub Personal Access Token <code>ghp_...</code></label>
+        <div class="gh-inp-row"><input class="gh-inp" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('gh-token',this)">show</button></div>
+      </div>
+      <p style="font-size:11px;color:var(--text-3)">This lets the Sync button write <code>data/deals.json</code> to your repo. Stored only in your browser's localStorage.</p>
+    </div>
+    <div id="gh-pane-hstoken" class="gh-pane">
+      <div class="gh-steps"><ol>
+        <li>Go to <a href="https://app.hubspot.com/integrations-settings/3411399/private-apps" target="_blank">HubSpot &rarr; Settings &rarr; Private Apps</a></li>
+        <li>Create app &rarr; name it <strong>blueBrix Dashboard</strong></li>
+        <li>Scopes: <code>crm.objects.deals.read</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.contacts.read</code>, <code>crm.schemas.deals.write</code></li>
+        <li>Create app &rarr; copy token (starts with <code>pat-na1-</code>)</li>
+      </ol></div>
+      <div class="gh-field"><label>HubSpot Private App Token <code>pat-na1-...</code></label>
+        <div class="gh-inp-row"><input class="gh-inp" id="hs-token-inp" type="password" placeholder="pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('hs-token-inp',this)">show</button></div>
+      </div>
+    </div>
+    <div class="gh-actions">
+      <button class="gh-primary" onclick="ghSaveSetup()">Save &amp; sync now</button>
+      <button class="gh-ghost" onclick="ghCloseSetup()">Load data only</button>
+    </div>
+    <p class="gh-note">&#9888; All tokens stored in localStorage only. Never sent anywhere except directly to api.github.com and api.hubapi.com.</p>
+  </div>
+</div>
+<!-- DB STATUS BAR -->
+<div class="db-bar" id="dbBar">
+  <div class="db-dot loading" id="dbDot"></div>
+  <span id="dbMsg">Loading data from GitHub...</span>
+  <button class="db-action" onclick="ghOpenSetup()">&#9881; Settings</button>
+</div>
+<!-- TOKEN PROMPT -->
+<div class="overlay" id="tokenOverlay">
+  <div class="prompt-card">
+    <h2>Connect your HubSpot account</h2>
+    <p>This dashboard syncs directly with HubSpot. You need a <strong>Private App token</strong> — free to create, stored only in your browser.</p>
+    <div class="prompt-steps">
+      <ol>
+        <li>Go to <a href="https://app.hubspot.com/integrations-settings/3411399/private-apps" target="_blank">HubSpot → Settings → Integrations → Private Apps</a></li>
+        <li>Click <strong>"Create a private app"</strong> → name it <strong>blueBrix Dashboard</strong></li>
+        <li>Under Scopes, tick: <code>crm.objects.deals.read</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.contacts.read</code>, <code>crm.schemas.deals.write</code></li>
+        <li>Click <strong>"Create app"</strong> → copy the token (starts with <code>pat-na1-</code>)</li>
+      </ol>
+    </div>
+    <div class="inp-wrap">
+      <input class="token-inp" id="tokenInp" type="password" placeholder="pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" />
+      <button class="vis-toggle" onclick="toggleVis()">show</button>
+    </div>
+    <div class="prompt-actions">
+      <button class="btn-primary" onclick="saveToken()">Save &amp; sync</button>
+      <button class="btn-ghost" onclick="closePrompt()">Use existing data</button>
+    </div>
+    <p class="prompt-note">⚠ Stored in localStorage only. Never sent anywhere except directly to api.hubapi.com. Do not use on a shared computer.</p>
+  </div>
+</div>
+
+<!-- SYNC OVERLAY -->
+<div class="sync-overlay" id="syncOverlay">
+  <div class="sync-card">
+    <div class="sync-spinner"></div>
+    <div class="sync-title">Syncing from HubSpot</div>
+    <div class="sync-step" id="syncStep">Connecting...</div>
+    <div class="sync-bar"><div class="sync-fill" id="syncFill"></div></div>
+    <div class="sync-log" id="syncLog"></div>
+  </div>
+</div>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo">blue<em>Brix</em></div>
+  <div class="divider"></div>
+  <span class="ctrl-label">Stage</span>
+  <select class="hs-select" id="stageSelect" onchange="switchStage(this.value)">
+    <option value="sql">Sales Qualified Lead</option>
+    <option value="demo">Presentation / Demo</option>
+    <option value="opp">Opportunity</option>
+  </select>
+  <div class="divider"></div>
+  <span class="ctrl-label">From</span>
+  <input class="date-input" type="date" id="dateFrom" value="2025-01-01" onchange="onDateChange()" />
+  <span class="date-sep">—</span>
+  <input class="date-input" type="date" id="dateTo" onchange="onDateChange()" />
+  <div class="tb-spacer"></div>
+  <div class="sync-meta">
+    <div class="sync-meta-lbl">Last synced</div>
+    <div class="sync-meta-val" id="lastSync">—</div>
+  </div>
+  <button class="sync-btn" id="syncBtn" onclick="onSyncClick()">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M23 4v6h-6M1 20v-6h6"/>
+      <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+    </svg>
+    Sync from HubSpot
+  </button>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div id="banner" class="banner"></div>
+  <div class="cors-note" id="corsNote">
+    ⚠ <strong>CORS blocked:</strong> HubSpot's API doesn't allow direct browser requests from GitHub Pages. Open this file locally on your computer to use the Sync button. Cached data below is still fully viewable. <a href="#" onclick="document.getElementById('corsNote').classList.remove('show');return false">Dismiss</a>
+  </div>
+
+  <!-- ════ SQL ════ -->
+  <div id="stage-sql" class="stage-panel active">
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val" id="sql-m-total">37</div><div class="metric-lbl">Total deals</div><div class="metric-sub" id="sql-m-sub">8 active · 29 past</div></div>
+      <div class="metric"><div class="metric-val" id="sql-m-acv">$2.1M</div><div class="metric-lbl">Total pipeline value</div><div class="metric-sub">Active + past</div></div>
+      <div class="metric"><div class="metric-val" id="sql-m-org">68%</div><div class="metric-lbl">Organic share</div><div class="metric-sub" id="sql-m-orgsub">25 of 37 deals</div></div>
+      <div class="metric"><div class="metric-val">Blog</div><div class="metric-lbl">Top first-touch</div><div class="metric-sub">Top EHRs for Behavioral Health</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('sql','overview')">Overview</button>
+      <button class="tab" onclick="showTab('sql','source')">Traffic sources</button>
+      <button class="tab" onclick="showTab('sql','journey')">Deal journeys</button>
+    </div>
+    <div id="sql-overview" class="tab-content active">
+      <div class="charts-row">
+        <div class="card"><div class="card-title">Source breakdown</div><div class="legend-row"><div class="legend-item"><div class="leg-dot" style="background:#1a9e6e"></div>Organic</div><div class="legend-item"><div class="leg-dot" style="background:#1a5fa8"></div>Paid</div><div class="legend-item"><div class="leg-dot" style="background:#e89a1a"></div>Direct</div><div class="legend-item"><div class="leg-dot" style="background:#c4528e"></div>Software Advice</div><div class="legend-item"><div class="leg-dot" style="background:#9b9b96"></div>Offline</div></div><div style="position:relative;height:190px"><canvas id="sql-sc"></canvas></div></div>
+        <div class="card"><div class="card-title">First-touch page</div><div class="bar-wrap"><div class="bar-lbl">Blog: Top EHRs</div><div class="bar-track"><div class="bar-fill" style="width:54%;background:#9FE1CB;color:#0e5c3f">8</div></div></div><div class="bar-wrap"><div class="bar-lbl">blueEHR product page</div><div class="bar-track"><div class="bar-fill" style="width:40%;background:#9FE1CB;color:#0e5c3f">6</div></div></div><div class="bar-wrap"><div class="bar-lbl">Behavioral health EHR</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:#B5D4F4;color:#1a5fa8">4</div></div></div><div class="bar-wrap"><div class="bar-lbl">Care coordination</div><div class="bar-track"><div class="bar-fill" style="width:20%;background:#B5D4F4;color:#1a5fa8">3</div></div></div><div class="bar-wrap"><div class="bar-lbl">Meetings link</div><div class="bar-track"><div class="bar-fill" style="width:27%;background:#FAC775;color:#8a4f0a">4</div></div></div></div>
+      </div>
+      <div class="card"><div class="card-title">Funnel</div><div class="funnel-step"><div class="funnel-lbl">First page visit</div><div class="funnel-bar" style="width:100%;background:#9FE1CB;color:#0e5c3f">37 contacts</div></div><div class="funnel-step"><div class="funnel-lbl">Form / meeting submit</div><div class="funnel-bar" style="width:95%;background:#5DCAA5;color:#fff">35 submissions</div></div><div class="funnel-step"><div class="funnel-lbl">Reached SQL</div><div class="funnel-bar" style="width:100%;background:#1a9e6e;color:#fff">37 in SQL</div></div><div class="funnel-step"><div class="funnel-lbl">Advanced to pres/demo</div><div class="funnel-bar" style="width:57%;background:#1a5fa8;color:#fff">21 deals</div></div><div class="funnel-step"><div class="funnel-lbl">Advanced to opportunity</div><div class="funnel-bar" style="width:19%;background:#4a3ab5;color:#fff">7 deals</div></div><div class="funnel-step"><div class="funnel-lbl">Closed won</div><div class="funnel-bar" style="width:3%;background:#0e5c3f;color:#fff">1</div></div></div>
+    </div>
+    <div id="sql-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:290px"><canvas id="sql-oc"></canvas></div></div></div>
+    <div id="sql-journey" class="tab-content">
+      <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — SQL stage</div><div class="ins-sub" id="sql-ins-sub">Based on 37 deals</div></div></div><div class="ins-summary">Of 37 SQL deals, only 1 closed won — 2.7% conversion. 8 deals advanced to Opportunity, 21 reached Pres/Demo. Organic search dominates at 68%. The blog "Top EHRs for Behavioral Health" accounts for first-touch on 8 deals. Paid search generates volume with zero closes.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">What's working</div><div class="ins-card-txt">Organic search (Google + Bing) drives 68% of deals. The behavioral health blog and blueEHR product page are highest-converting first-touch assets. Meetings booked via Kapil's link advance at higher rates than generic forms.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">What's not working</div><div class="ins-card-txt">Paid search — 5 deals, all closed lost or on hold, zero advances to Opportunity. Keywords like "ehr company" and "behavioral health software" aren't converting. Review ad targeting urgently.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Persona signal</div><div class="ins-card-txt">Founders, CEOs and Clinical Directors dominate SQL stage. Medium orgs (21–100 users) are the majority. Enterprise orgs (HCRS $576K) appear but need dedicated longer-cycle nurture.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Bing organic signal</div><div class="ins-card-txt">HCRS ($576K), AHDI ($36K) and Italian Home for Children all came from Bing. Consider allocating SEO effort and Bing-specific content for healthcare IT decision-makers.</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Sullivan County — priority</div><div class="ins-card-txt">Sullivan County ($60K) re-entered SQL after re-initiating the RFP. Strong buying signal. Tailor follow-up to public sector procurement requirements and timeline commitments.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Content recommendation</div><div class="ins-card-txt">The "Top EHRs for Behavioral Health" blog drives 8 deals. Create 2–3 supporting articles targeting adjacent queries to widen the organic funnel.</div></div></div></div>
+      <div class="card">
+        <div class="card-title">Deal journeys · SQL stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
+        <p style="font-size:11px;color:var(--text-3);margin-bottom:.7rem">Synced from HubSpot. Use the dropdowns to set Organization Type and ICP Niche — changes save automatically.</p>
+        <div class="table-wrap"><table class="deal-table"><thead><tr><th>Organization</th><th>Status</th><th>ACV</th><th>Org size</th><th>Source</th><th>First page seen</th><th>First conversion</th><th>Contact</th><th>Job title</th><th class="editable-col">Org type <span class="col-badge">editable</span></th><th class="editable-col">ICP niche <span class="col-badge">editable</span></th></tr></thead><tbody id="sql-tbody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ DEMO ════ -->
+  <div id="stage-demo" class="stage-panel">
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val" id="demo-m-total">20</div><div class="metric-lbl">Total deals</div><div class="metric-sub">5 active · 15 past</div></div>
+      <div class="metric"><div class="metric-val" id="demo-m-acv">$800K</div><div class="metric-lbl">Total pipeline value</div><div class="metric-sub">Active + past</div></div>
+      <div class="metric"><div class="metric-val" id="demo-m-org">70%</div><div class="metric-lbl">Organic share</div><div class="metric-sub">14 of 20 deals</div></div>
+      <div class="metric"><div class="metric-val">Blog</div><div class="metric-lbl">Top first-touch</div><div class="metric-sub">Top EHRs for Behavioral Health</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('demo','overview')">Overview</button>
+      <button class="tab" onclick="showTab('demo','source')">Traffic sources</button>
+      <button class="tab" onclick="showTab('demo','journey')">Deal journeys</button>
+    </div>
+    <div id="demo-overview" class="tab-content active">
+      <div class="charts-row">
+        <div class="card"><div class="card-title">Source breakdown</div><div class="legend-row"><div class="legend-item"><div class="leg-dot" style="background:#1a9e6e"></div>Organic</div><div class="legend-item"><div class="leg-dot" style="background:#1a5fa8"></div>Paid / paid lead</div><div class="legend-item"><div class="leg-dot" style="background:#e89a1a"></div>Direct</div></div><div style="position:relative;height:190px"><canvas id="demo-sc"></canvas></div></div>
+        <div class="card"><div class="card-title">First-touch page</div><div class="bar-wrap"><div class="bar-lbl">Blog: Top EHRs</div><div class="bar-track"><div class="bar-fill" style="width:35%;background:#9FE1CB;color:#0e5c3f">7</div></div></div><div class="bar-wrap"><div class="bar-lbl">blueEHR product page</div><div class="bar-track"><div class="bar-fill" style="width:25%;background:#9FE1CB;color:#0e5c3f">5</div></div></div><div class="bar-wrap"><div class="bar-lbl">Behavioral health EHR</div><div class="bar-track"><div class="bar-fill" style="width:15%;background:#B5D4F4;color:#1a5fa8">3</div></div></div><div class="bar-wrap"><div class="bar-lbl">Care management</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:#B5D4F4;color:#1a5fa8">2</div></div></div><div class="bar-wrap"><div class="bar-lbl">Meetings link</div><div class="bar-track"><div class="bar-fill" style="width:10%;background:#FAC775;color:#8a4f0a">2</div></div></div></div>
+      </div>
+      <div class="card"><div class="card-title">Funnel</div><div class="funnel-step"><div class="funnel-lbl">First page visit</div><div class="funnel-bar" style="width:100%;background:#9FE1CB;color:#0e5c3f">20 contacts</div></div><div class="funnel-step"><div class="funnel-lbl">Form / meeting submit</div><div class="funnel-bar" style="width:90%;background:#5DCAA5;color:#fff">18 submissions</div></div><div class="funnel-step"><div class="funnel-lbl">Reached pres/demo</div><div class="funnel-bar" style="width:100%;background:#1a9e6e;color:#fff">20 in pres/demo</div></div><div class="funnel-step"><div class="funnel-lbl">Advanced to opportunity</div><div class="funnel-bar" style="width:10%;background:#4a3ab5;color:#fff">2 deals</div></div><div class="funnel-step"><div class="funnel-lbl">Closed won</div><div class="funnel-bar" style="width:5%;background:#0e5c3f;color:#fff">1</div></div></div>
+    </div>
+    <div id="demo-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:270px"><canvas id="demo-oc"></canvas></div></div></div>
+    <div id="demo-journey" class="tab-content">
+      <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — Pres/demo stage</div><div class="ins-sub">Based on 20 deals</div></div></div><div class="ins-summary">Of 20 deals that reached Pres/Demo, only 1 closed won (GO Ministries $18K), 2 advanced to Opportunity, 12 closed lost — 60% loss rate. Demos reach the right audience but something in the demo-to-close journey is breaking down. Direct traffic and paid leads perform worse than organic at this stage.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">Winning pattern</div><div class="ins-card-txt">GO Ministries: Organic Google → blueEHR product page (blueehr.com) → "Schedule a Demo" form → Lead Director. Organic intent + product page + structured scheduling is the winning formula.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">High-value losses</div><div class="ins-card-txt">Charak Center ($100.8K, IT Coordinator) and CornerstoneTherapies ($78K, Software Advice) = $178.8K lost ACV. Champion contacts, not decision-makers. Multi-thread earlier — reach economic buyers before the demo.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Demo-to-close gap</div><div class="ins-card-txt">5 active deals stuck in pres/demo. All high-intent organic. Set a maximum 2-week demo-to-decision cadence with a clear next step committed before the demo ends.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Persona insight</div><div class="ins-card-txt">Founders and CEOs not converting at demo stage may indicate pricing concerns. Create a post-demo ROI one-pager for small practice owners (1–20 users).</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Bing organic signal</div><div class="ins-card-txt">AHDI (VP-level, $36K) came via Bing organic — active in pres/demo. Second Bing data point at this stage. Invest in Bing SEO for healthcare IT decision-makers.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Software Advice ROI</div><div class="ins-card-txt">CornerstoneTherapies (Software Advice, Co-Director) closed lost here. Software Advice may attract evaluators over buyers. Review ICP match criteria before renewing.</div></div></div></div>
+      <div class="card">
+        <div class="card-title">Deal journeys · Pres/demo stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
+        <div class="table-wrap"><table class="deal-table"><thead><tr><th>Organization</th><th>Status</th><th>ACV</th><th>Org size</th><th>Source</th><th>First page seen</th><th>First conversion</th><th>Contact</th><th>Job title</th><th class="editable-col">Org type <span class="col-badge">editable</span></th><th class="editable-col">ICP niche <span class="col-badge">editable</span></th></tr></thead><tbody id="demo-tbody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════ OPP ════ -->
+  <div id="stage-opp" class="stage-panel">
+    <div class="metric-row">
+      <div class="metric"><div class="metric-val" id="opp-m-total">11</div><div class="metric-lbl">Total opportunities</div><div class="metric-sub">4 active · 7 past</div></div>
+      <div class="metric"><div class="metric-val" id="opp-m-acv">$742K</div><div class="metric-lbl">Total pipeline value</div><div class="metric-sub">$400K active · $342K past</div></div>
+      <div class="metric"><div class="metric-val" id="opp-m-org">82%</div><div class="metric-lbl">Organic share</div><div class="metric-sub">9 of 11 deals</div></div>
+      <div class="metric"><div class="metric-val">Blog</div><div class="metric-lbl">Top first-touch</div><div class="metric-sub">Top EHRs for Behavioral Health</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('opp','overview')">Overview</button>
+      <button class="tab" onclick="showTab('opp','source')">Traffic sources</button>
+      <button class="tab" onclick="showTab('opp','journey')">Deal journeys</button>
+    </div>
+    <div id="opp-overview" class="tab-content active">
+      <div class="charts-row">
+        <div class="card"><div class="card-title">Source breakdown</div><div class="legend-row"><div class="legend-item"><div class="leg-dot" style="background:#1a9e6e"></div>Organic</div><div class="legend-item"><div class="leg-dot" style="background:#1a5fa8"></div>Paid</div><div class="legend-item"><div class="leg-dot" style="background:#4a3ab5"></div>Social</div><div class="legend-item"><div class="leg-dot" style="background:#9b9b96"></div>Other</div></div><div style="position:relative;height:190px"><canvas id="opp-sc"></canvas></div></div>
+        <div class="card"><div class="card-title">First-touch page</div><div class="bar-wrap"><div class="bar-lbl">Blog: Top EHRs</div><div class="bar-track"><div class="bar-fill" style="width:55%;background:#9FE1CB;color:#0e5c3f">3</div></div></div><div class="bar-wrap"><div class="bar-lbl">blueEHR product page</div><div class="bar-track"><div class="bar-fill" style="width:73%;background:#B5D4F4;color:#1a5fa8">4</div></div></div><div class="bar-wrap"><div class="bar-lbl">Home page</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:#9FE1CB;color:#0e5c3f">1</div></div></div><div class="bar-wrap"><div class="bar-lbl">LinkedIn / Meetings</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:#e0dffb;color:#4a3ab5">1</div></div></div><div class="bar-wrap"><div class="bar-lbl">Website chat</div><div class="bar-track"><div class="bar-fill" style="width:18%;background:#e0e0dc;color:#5F5E5A">1</div></div></div></div>
+      </div>
+      <div class="card"><div class="card-title">Funnel</div><div class="funnel-step"><div class="funnel-lbl">First page visit</div><div class="funnel-bar" style="width:100%;background:#9FE1CB;color:#0e5c3f">11 contacts</div></div><div class="funnel-step"><div class="funnel-lbl">Form / meeting submit</div><div class="funnel-bar" style="width:82%;background:#5DCAA5;color:#fff">9 submissions</div></div><div class="funnel-step"><div class="funnel-lbl">Reached opportunity</div><div class="funnel-bar" style="width:100%;background:#1a9e6e;color:#fff">11 in opportunity</div></div><div class="funnel-step"><div class="funnel-lbl">Closed won</div><div class="funnel-bar" style="width:9%;background:#0e5c3f;color:#fff">1</div></div></div>
+    </div>
+    <div id="opp-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:250px"><canvas id="opp-oc"></canvas></div></div></div>
+    <div id="opp-journey" class="tab-content">
+      <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — Opportunity stage</div><div class="ins-sub">Based on 11 deals</div></div></div><div class="ins-summary">Of 11 deals reaching Opportunity, 4 active ($400K combined), 1 closed won ($18K — GO Ministries), 3 closed lost, 3 on hold. Organic search accounts for 82% — highest of any stage. Every deal started with a research-led journey through blog or product pages.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">Active pipeline — focus</div><div class="ins-card-txt">New Hope Treatment Centers ($306K, Director of Clinical Informatics) is your highest-value active opportunity. Pharmacy Hub ($10.5K) came via LinkedIn — nurture separately with social-specific content.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">Gladney — lesson learned</div><div class="ins-card-txt">Gladney Center ($24K) closed lost due to non-responsiveness. Contact was Director of Clinical Services — possibly not final decision-maker. Multi-thread: identify both champion and economic buyer early.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">On-hold deals need action</div><div class="ins-card-txt">Three deals totalling $273.6K on hold: Quality Health Partners ($183.6K), People.Health ($36K), sricanhelp ($54K). Set quarterly check-in cadence with re-engagement offer.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Sullivan County — priority</div><div class="ins-card-txt">Sullivan County ($60K) moved back to SQL after re-initiating the RFP. Prioritise RFP compliance, non-profit health references, and a dedicated implementation timeline.</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Website chat signal</div><div class="ins-card-txt">Quality Health Partners ($183.6K) arrived via website chat on About Us page. Add proactive chat triggers on high-intent pages (Pricing, About Us) to capture more large-org visitors.</div></div><div class="ins-card ic-g"><div class="ins-card-lbl">Winning journey to replicate</div><div class="ins-card-txt">GO Ministries: Organic Google → blueehr.com product page → Schedule a Demo → Lead Director. Your blueprint for Medium-sized non-profit health organisations.</div></div></div></div>
+      <div class="card">
+        <div class="card-title">Deal journeys · Opportunity stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
+        <p style="font-size:11px;color:var(--text-3);margin-bottom:.7rem">Sullivan County moved back to SQL (RFP re-submitted). Gladney Center marked closed lost.</p>
+        <div class="table-wrap"><table class="deal-table"><thead><tr><th>Organization</th><th>Status</th><th>ACV</th><th>Org size</th><th>Source</th><th>First page seen</th><th>First conversion</th><th>Contact</th><th>Job title</th><th class="editable-col">Org type <span class="col-badge">editable</span></th><th class="editable-col">ICP niche <span class="col-badge">editable</span></th></tr></thead><tbody id="opp-tbody"></tbody></table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════
+// DROPDOWN OPTIONS
+// ══════════════════════════════════════
+const ORG_TYPE_OPTIONS = [
+  '', 'Behavioral Health', 'Dental', 'Post Acute Care', 'Primary Care',
+  'Enablers', 'Pharma', 'Payers', 'Long Term Care', 'Nursing Homes',
+  'Sleep Health', 'Ortho', 'Multi-Specialty', 'FQHC', 'MSO', 'ACO', 'IPA'
+];
+const ICP_NICHE_OPTIONS = [
+  '', 'CCBHC', 'CMHC', 'Virtual Care', 'IDD', 'SUD', 'Residential'
+];
+
+const HS_BASE = 'https://api.hubapi.com';
+const PIPELINE = 'default';
+const STAGES = {
+  sql:  { id: '59a9ced7-6be8-459e-95f3-28e2f85dd638', histProp: '59a9ced7_6be8_459e_95f3_28e2f85dd638_732960690' },
+  demo: { id: 'qualifiedtobuy',                        histProp: 'qualifiedtobuy' },
+  opp:  { id: '32470052',                              histProp: '32470052' },
+};
+const DEAL_PROPS = [
+  'dealname','dealstage','amount','closedate','createdate','pipeline',
+  'hs_v2_date_entered_59a9ced7_6be8_459e_95f3_28e2f85dd638_732960690',
+  'hs_v2_date_entered_qualifiedtobuy','hs_v2_date_entered_32470052',
+  'organization_type','icp_niche',
+];
+const CONTACT_PROPS = [
+  'firstname','lastname','jobtitle','organization_size',
+  'hs_analytics_source','hs_analytics_source_data_1','hs_analytics_source_data_2',
+  'hs_analytics_first_url','hs_analytics_first_referrer','first_conversion_event_name',
+];
+
+// ══════════════════════════════════════
+// SEED DATA
+// ══════════════════════════════════════
+const SEED = {
+  sql:[
+    {_divider:'Currently in SQL — 8 deals'},
+    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'Active SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'',icp_niche:''},
+    {dealId:'58295140196',org:'New Harbor Behavioral Healthcare',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Eric Dyer',title:'Co-Founder & Executive Director',org_type:'',icp_niche:''},
+    {dealId:'56122122653',org:'Agilon Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Request demo (Care coordination)',contact:'Stephanie Buxton',title:'—',org_type:'',icp_niche:''},
+    {dealId:'55433912897',org:'River Root Counseling',status:'b-sql',statusLabel:'Active SQL',acv:'$15K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Danielle Older',title:'CEO',org_type:'',icp_niche:''},
+    {dealId:'50425845305',org:'Evansville Surgical Associates',status:'b-sql',statusLabel:'Active SQL',acv:'$300K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: RCM / outsourcing',conv:'RCM Services page form',contact:'Mark Crummley',title:'Chief Operating Officer',org_type:'',icp_niche:''},
+    {dealId:'51987880112',org:'Life Opportunities Unlimited',status:'b-sql',statusLabel:'Active SQL',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Meetings link (kapil)',conv:'Meetings Link: kapil',contact:'Jennifer Bedrosian',title:'Executive Assistant',org_type:'',icp_niche:''},
+    {dealId:'48946519087',org:'HCRS',status:'b-sql',statusLabel:'Active SQL',acv:'$576K',orgSize:'Enterprise (501+)',orgSizeClass:'b-ent',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Contact form (blueBriX)',contact:'Warren Sergeant',title:'Director of IT',org_type:'',icp_niche:''},
+    {dealId:'48799113140',org:'Emergent Mental Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Carrie Mardula',title:'Founder',org_type:'',icp_niche:''},
+    {_divider:'Advanced to pres/demo — 6 deals'},
+    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'',icp_niche:''},
+    {dealId:'57178148705',org:'Cognitia Organization',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'',icp_niche:''},
+    {dealId:'53451546450',org:'Global Clinical',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'',icp_niche:''},
+    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'',icp_niche:''},
+    {dealId:'48474039196',org:'AHDI',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'',icp_niche:''},
+    {_divider:'Advanced to opportunity — 7 deals'},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
+    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-opp',statusLabel:'→ Opportunity',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'',icp_niche:''},
+    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'',icp_niche:''},
+    {dealId:'45932818334',org:'Sound Dental Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'',icp_niche:''},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
+    {_divider:'Closed lost — 19 deals'},
+    {dealId:'53696120972',org:'Mindoula',status:'b-lost',statusLabel:'Closed lost',acv:'$270K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Blaise DeLuca',title:'VP, New Initiatives',org_type:'',icp_niche:''},
+    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'',icp_niche:''},
+    {dealId:'51515316814',org:'Integrative Behavioral Health & Medicine',status:'b-lost',statusLabel:'Closed lost',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Wasim Sk',title:'—',org_type:'',icp_niche:''},
+    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'',icp_niche:''},
+    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'46997553017',org:'Blue Longevity',status:'b-lost',statusLabel:'Closed lost',acv:'$64.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueehr.com home page',conv:'Schedule a Demo',contact:'Dilyan Dimitrov',title:'Managing Partner',org_type:'',icp_niche:''},
+    {dealId:'45417065786',org:'WOMENS SPECIALISTS OF NEW MEXICO',status:'b-lost',statusLabel:'Closed lost',acv:'$156K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-offline',src:'Offline / CRM',page:'N/A',conv:'N/A',contact:'Brandy McDonald',title:'Clinical Director',org_type:'',icp_niche:''},
+    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'',icp_niche:''},
+    {dealId:'44206783232',org:'Sdora Wellbeing',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Behavioral health EHR page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Damilola Ajongbolo',title:'CEO',org_type:'',icp_niche:''},
+    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'44951247125',org:'Neuro Rehab Collaborative',status:'b-lost',statusLabel:'Closed lost',acv:'$13.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · ehr healthcare',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Lydia Lennox McNeary',title:'Co Owner',org_type:'',icp_niche:''},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'42804855128',org:'NewLondonCounseling',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (Behavioral health EHR)',contact:'Michelle Sapp',title:'Office Manager',org_type:'',icp_niche:''},
+    {dealId:'42804855400',org:'Primary Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Behavioral health EHR)',contact:'Chris Christopher',title:'Co Founder',org_type:'',icp_niche:''},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
+    {dealId:'42807387787',org:'Paradigm',status:'b-lost',statusLabel:'Closed lost',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · population health mgmt',page:'Care Management solutions (Google Ads)',conv:'Request demo (Patient Engagement)',contact:'Lauren Rashford',title:'VP Clinical Product Solutions',org_type:'',icp_niche:''},
+    {_divider:'On hold — 2 deals'},
+    {dealId:'42804854853',org:'JCC Pittsburgh',status:'b-hold',statusLabel:'On hold',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care coordination',page:'Care coordination page (Google Ads)',conv:'Request demo (Care coordination)',contact:'Alexis Mancuso',title:'Chief Aging Services Officer',org_type:'',icp_niche:''},
+    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'',icp_niche:''},
+  ],
+  demo:[
+    {_divider:'Currently in pres/demo — 5 deals'},
+    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'',icp_niche:''},
+    {dealId:'57178148705',org:'Cognitia Organization',status:'b-active',statusLabel:'Active pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'',icp_niche:''},
+    {dealId:'53451546450',org:'Global Clinical',status:'b-active',statusLabel:'Active pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'',icp_niche:''},
+    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'48474039196',org:'AHDI',status:'b-active',statusLabel:'Active pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'',icp_niche:''},
+    {_divider:'Advanced to opportunity — 2 deals'},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
+    {_divider:'Closed won — 1 deal'},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
+    {_divider:'Closed lost — 12 deals'},
+    {dealId:'57980007975',org:'Morningstar Health',status:'b-lost',statusLabel:'Closed lost',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Steven Lutes',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'',icp_niche:''},
+    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'',icp_niche:''},
+    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'',icp_niche:''},
+    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-lost',statusLabel:'Closed lost',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'',icp_niche:''},
+    {dealId:'45932818334',org:'Sound Dental Care',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-lost',statusLabel:'Closed lost',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'',icp_niche:''},
+    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'',icp_niche:''},
+    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
+  ],
+  opp:[
+    {_divider:'Currently in opportunity — 4 deals'},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-active',statusLabel:'Active opp',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
+    {dealId:'44018168389',org:'Pharmacy Hub (Billing)',status:'b-active',statusLabel:'Active opp',acv:'$10.5K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-social',src:'Social · LinkedIn',page:'HubSpot Meetings (LinkedIn referral)',conv:'Meetings Link: sam101',contact:'Devang D',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
+    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'→ Back to SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'',icp_niche:''},
+    {_divider:'Past opportunity — 7 deals'},
+    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'',icp_niche:''},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'',icp_niche:''},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
+    {dealId:'42804850983',org:'People.Health',status:'b-hold',statusLabel:'On hold',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · via blueehr.com',page:'blueEHR product page',conv:'Request demo (Digital Health Platform)',contact:'Zach Smith',title:'Chief Product Officer',org_type:'',icp_niche:''},
+    {dealId:'42804850865',org:'Quality Health Partners',status:'b-hold',statusLabel:'On hold',acv:'$183.6K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page (bluebrix.health)',conv:'Website chat (About Us page)',contact:'Cattien Ngo',title:'Technical Project Specialist',org_type:'',icp_niche:''},
+  ]
+};
+
+// ══════════════════════════════════════
+// TOKEN
+// ══════════════════════════════════════
+function getToken(){return localStorage.getItem('hs_private_token')}
+function saveToken(){
+  const v=document.getElementById('tokenInp').value.trim();
+  if(!v.startsWith('pat-')){alert('Please enter a valid HubSpot Private App token (starts with pat-)');return}
+  localStorage.setItem('hs_private_token',v);
+  document.getElementById('tokenOverlay').classList.remove('show');
+  startSync();
+}
+function closePrompt(){document.getElementById('tokenOverlay').classList.remove('show')}
+function toggleVis(){
+  const i=document.getElementById('tokenInp'),b=i.nextElementSibling;
+  i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'show':'hide';
+}
+
+// ══════════════════════════════════════
+// HUBSPOT PROPERTY SETUP
+// ══════════════════════════════════════
+async function ensureProperties(token) {
+  // Create organization_type on deals if missing
+  const orgTypeBody = {
+    name: 'organization_type',
+    label: 'Organization Type',
+    type: 'enumeration',
+    fieldType: 'select',
+    groupName: 'dealinformation',
+    description: 'Type of organization — used for pipeline segmentation',
+    options: ORG_TYPE_OPTIONS.filter(o=>o).map(o=>({label:o,value:o,hidden:false}))
+  };
+  // Create icp_niche on deals if missing
+  const icpBody = {
+    name: 'icp_niche',
+    label: 'ICP Niche',
+    type: 'enumeration',
+    fieldType: 'select',
+    groupName: 'dealinformation',
+    description: 'ICP niche classification for deal segmentation',
+    options: ICP_NICHE_OPTIONS.filter(o=>o).map(o=>({label:o,value:o,hidden:false}))
+  };
+
+  // Try to create both — if they already exist HubSpot returns 409 which we silently ignore
+  for (const body of [orgTypeBody, icpBody]) {
+    try {
+      const res = await fetch(`${HS_BASE}/crm/v3/properties/deals`, {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
+      if (res.ok) addLog(`Created property: ${body.label}`, 'ok');
+      else if (res.status === 409) addLog(`Property exists: ${body.label}`, 'ok');
+      else { const e = await res.json().catch(()=>({})); addLog(`Property warning (${body.name}): ${e.message||res.status}`); }
+    } catch(e) { addLog(`Property setup skipped (CORS): ${body.name}`); }
+  }
+}
+
+// ══════════════════════════════════════
+// SAVE TO HUBSPOT
+// ══════════════════════════════════════
+const saveQueue = {}; // dealId -> timeout
+async function savePropertyToHubSpot(dealId, propName, value, selectEl) {
+  const token = getToken();
+  if (!token) { showBanner('err','No HubSpot token — click Sync to connect'); return; }
+
+  // Debounce — wait 400ms in case user changes mind
+  clearTimeout(saveQueue[dealId + propName]);
+  selectEl.classList.add('saving');
+
+  saveQueue[dealId + propName] = setTimeout(async () => {
+    try {
+      const res = await fetch(`${HS_BASE}/crm/v3/objects/deals/${dealId}`, {
+        method: 'PATCH',
+        headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ properties: { [propName]: value } })
+      });
+      if (res.ok) {
+        selectEl.classList.remove('saving');
+        selectEl.classList.add('saved');
+        setTimeout(() => selectEl.classList.remove('saved'), 2000);
+        // Update local cache
+        const cached = localStorage.getItem('hs_synced_data');
+        if (cached) {
+          try {
+            const data = JSON.parse(cached);
+            ['sql','demo','opp'].forEach(sk => {
+              const rows = data[sk] || [];
+              rows.forEach(r => { if (r.dealId === dealId) r[propName] = value; });
+            });
+            localStorage.setItem('hs_synced_data', JSON.stringify(data));
+          } catch {}
+        }
+        showBanner('ok', `✓ ${propName === 'organization_type' ? 'Org type' : 'ICP niche'} saved to HubSpot`);
+      } else {
+        const e = await res.json().catch(()=>({}));
+        if (res.status === 0 || e.message?.includes('CORS') || !res.status) {
+          // CORS error — save locally only
+          selectEl.classList.remove('saving');
+          selectEl.classList.add('saved');
+          setTimeout(() => selectEl.classList.remove('saved'), 2000);
+          saveLocalOnly(dealId, propName, value);
+          showBanner('info', `ℹ Saved locally (CORS prevents direct HubSpot write from browser). Open file locally to sync to HubSpot.`);
+        } else {
+          selectEl.classList.remove('saving');
+          showBanner('err', `✗ Save failed: ${e.message || res.status}`);
+        }
+      }
+    } catch(err) {
+      selectEl.classList.remove('saving');
+      // Network/CORS error — save to localStorage as fallback
+      selectEl.classList.add('saved');
+      setTimeout(() => selectEl.classList.remove('saved'), 2000);
+      saveLocalOnly(dealId, propName, value);
+      showBanner('info', `ℹ Saved locally. To sync to HubSpot, open this file locally on your computer.`);
+    }
+  }, 400);
+}
+
+function saveLocalOnly(dealId, propName, value) {
+  // Save to localStorage as fallback when CORS blocks direct API calls
+  const key = `hs_local_overrides`;
+  let overrides = {};
+  try { overrides = JSON.parse(localStorage.getItem(key)||'{}'); } catch {}
+  if (!overrides[dealId]) overrides[dealId] = {};
+  overrides[dealId][propName] = value;
+  localStorage.setItem(key, JSON.stringify(overrides));
+  // Also update synced data cache
+  const cached = localStorage.getItem('hs_synced_data');
+  if (cached) {
+    try {
+      const data = JSON.parse(cached);
+      ['sql','demo','opp'].forEach(sk => {
+        (data[sk]||[]).forEach(r => { if (r.dealId === String(dealId)) r[propName] = value; });
+      });
+      localStorage.setItem('hs_synced_data', JSON.stringify(data));
+    } catch {}
+  }
+}
+
+function getLocalOverrides() {
+  try { return JSON.parse(localStorage.getItem('hs_local_overrides')||'{}'); } catch { return {}; }
+}
+
+// ══════════════════════════════════════
+// TABLE RENDERER
+// ══════════════════════════════════════
+function makeDropdown(dealId, propName, currentValue, options) {
+  const opts = options.map(o => `<option value="${o}" ${o===currentValue?'selected':''}>${o||'— select —'}</option>`).join('');
+  return `<select class="edit-select" onchange="savePropertyToHubSpot('${dealId}','${propName}',this.value,this)">${opts}</select>`;
+}
+
+function renderTable(stageKey, rows) {
+  const tbody = document.getElementById(stageKey+'-tbody');
+  if (!tbody) return;
+  if (!rows?.length) {
+    tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2rem;color:var(--text-3)">No data — click Sync to load from HubSpot</td></tr>';
+    return;
+  }
+  const overrides = getLocalOverrides();
+  tbody.innerHTML = '';
+  rows.forEach(r => {
+    if (r._divider) {
+      tbody.insertAdjacentHTML('beforeend', `<tr class="sec-div"><td colspan="11">${r._divider}</td></tr>`);
+      return;
+    }
+    const srcParts = (r.src||'').split(' · ');
+    // Merge local overrides
+    const orgType  = (overrides[r.dealId]?.organization_type ?? r.org_type ?? r.organization_type ?? '');
+    const icpNiche = (overrides[r.dealId]?.icp_niche         ?? r.icp_niche ?? '');
+    const orgTypeDD  = r.dealId ? makeDropdown(r.dealId, 'organization_type', orgType,  ORG_TYPE_OPTIONS) : '<span class="muted">—</span>';
+    const icpNicheDD = r.dealId ? makeDropdown(r.dealId, 'icp_niche',         icpNiche, ICP_NICHE_OPTIONS) : '<span class="muted">—</span>';
+    tbody.insertAdjacentHTML('beforeend', `<tr>
+      <td style="font-weight:500">${r.org||'—'}</td>
+      <td><span class="badge ${r.status||''}">${r.statusLabel||'—'}</span></td>
+      <td>${r.acv||'—'}</td>
+      <td><span class="badge ${r.orgSizeClass||''}">${r.orgSize||'—'}</span></td>
+      <td><span class="badge ${r.srcClass||'b-offline'}">${srcParts[0]||'—'}</span>${srcParts.length>1?`<br><span class="muted">${srcParts.slice(1).join(' · ')}</span>`:''}</td>
+      <td style="max-width:150px;word-break:break-word;font-size:11px">${r.firstPage||r.page||'—'}</td>
+      <td style="max-width:145px;word-break:break-word;font-size:11px">${r.firstConv||r.conv||'—'}</td>
+      <td><span class="muted">${r.contact||'—'}</span></td>
+      <td><span class="muted">${r.title||'—'}</span></td>
+      <td>${orgTypeDD}</td>
+      <td>${icpNicheDD}</td>
+    </tr>`);
+  });
+}
+
+// ══════════════════════════════════════
+// HUBSPOT API CALLS
+// ══════════════════════════════════════
+async function hsPost(path,body,token){
+  const res=await fetch(`${HS_BASE}${path}`,{method:'POST',headers:{'Authorization':`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||`HubSpot API error ${res.status}`)}
+  return res.json();
+}
+async function fetchDeals(stageKey,token,fromMs,toMs){
+  const cfg=STAGES[stageKey];
+  const body={filterGroups:[
+    {filters:[{propertyName:'pipeline',operator:'EQ',value:'default'},{propertyName:'createdate',operator:'GTE',value:String(fromMs)},{propertyName:'createdate',operator:'LTE',value:String(toMs)},{propertyName:'dealstage',operator:'EQ',value:cfg.id}]},
+    {filters:[{propertyName:'pipeline',operator:'EQ',value:'default'},{propertyName:'createdate',operator:'GTE',value:String(fromMs)},{propertyName:'createdate',operator:'LTE',value:String(toMs)},{propertyName:`hs_v2_date_entered_${cfg.histProp}`,operator:'HAS_PROPERTY'},{propertyName:'dealstage',operator:'NEQ',value:cfg.id}]},
+  ],properties:DEAL_PROPS,limit:200};
+  const data=await hsPost('/crm/v3/objects/deals/search',body,token);
+  return data.results||[];
+}
+async function fetchContacts(dealIds,token){
+  if(!dealIds.length)return{};
+  const contactMap={};
+  for(let i=0;i<dealIds.length;i+=100){
+    const batch=dealIds.slice(i,i+100);
+    const assoc=await hsPost('/crm/v3/associations/deals/contacts/batch/read',{inputs:batch.map(id=>({id:String(id)}))},token);
+    const cIds=new Set();const d2c={};
+    for(const r of assoc.results||[]){const did=r.from?.id;const toIds=(r.to||[]).map(t=>t.id);d2c[did]=toIds;toIds.forEach(id=>cIds.add(id))}
+    if(!cIds.size)continue;
+    const cr=await hsPost('/crm/v3/objects/contacts/batch/read',{inputs:[...cIds].map(id=>({id})),properties:CONTACT_PROPS},token);
+    const byId={};for(const c of cr.results||[])byId[c.id]=c.properties;
+    for(const[did,cids]of Object.entries(d2c))if(cids.length&&byId[cids[0]])contactMap[did]=byId[cids[0]];
+  }
+  return contactMap;
+}
+
+// ══════════════════════════════════════
+// DATA MAPPING
+// ══════════════════════════════════════
+function mapSrcClass(src){const s=(src||'').toUpperCase();if(s==='ORGANIC_SEARCH')return'b-organic';if(s==='PAID_SEARCH')return'b-paid';if(s==='DIRECT_TRAFFIC')return'b-direct';if(s.includes('SOCIAL'))return'b-social';return'b-offline'}
+function mapSrcLabel(c){const src=(c?.hs_analytics_source||'').toUpperCase(),d1=c?.hs_analytics_source_data_1||'',d2=c?.hs_analytics_source_data_2||'',ref=c?.hs_analytics_first_referrer||'';if(src==='ORGANIC_SEARCH')return`Organic · ${ref.includes('bing')?'Bing':'Google'}`;if(src==='PAID_SEARCH')return`Paid search · ${d2||d1}`;if(src==='DIRECT_TRAFFIC')return'Direct traffic';if(src.includes('SOCIAL'))return`Social · ${d1}`;return'Offline / CRM'}
+function mapOrgSizeClass(sz){if(!sz)return'b-small';const s=sz.toLowerCase();if(s.includes('enterprise')||s.includes('501'))return'b-ent';if(s.includes('large')||s.includes('101'))return'b-large';if(s.includes('medium')||s.includes('21'))return'b-med';return'b-small'}
+function fmtAcv(a){if(!a)return'—';const n=parseFloat(a);if(isNaN(n))return'—';if(n>=1e6)return`$${(n/1e6).toFixed(1)}M`;if(n>=1000)return`$${Math.round(n/1000)}K`;return`$${n}`}
+function cleanUrl(u){if(!u)return'—';try{const x=new URL(u);return(x.hostname.replace('www.','')+x.pathname).replace(/\/$/,'')||x.hostname}catch{return u.slice(0,55)}}
+function mapStatus(sid,cid){const lbl={'59a9ced7-6be8-459e-95f3-28e2f85dd638':['b-sql','Active SQL'],'qualifiedtobuy':['b-active','Active pres/demo'],'32470052':['b-active','Active opp'],'closedwon':['b-won','Closed won'],'closedlost':['b-lost','Closed lost'],'e939dc05-0bcf-4765-896a-8c11ad217155':['b-hold','On hold'],'c9b0d6ef-0f10-4cbd-ba22-ad07817c2a8c':['b-hold','Closed other']};if(sid!==cid){if(sid==='32470052')return['b-opp','→ Opportunity'];if(sid==='qualifiedtobuy')return['b-demo','→ Pres/demo'];if(sid==='59a9ced7-6be8-459e-95f3-28e2f85dd638')return['b-sql','→ SQL']}return lbl[sid]||['b-hold',sid]}
+function buildRow(deal,contact,cid){
+  const p=deal.properties,c=contact||{};
+  const[sc,sl]=mapStatus(p.dealstage,cid);
+  const isSA=(c.hs_analytics_first_url||'').toLowerCase().includes('softwareadvice')||(c.hs_analytics_source_data_1||'').toLowerCase().includes('software_advice');
+  return{
+    dealId:deal.id,
+    org:(p.dealname||'Unknown').replace(/ - New Deal$/,'').replace(/\s*-\s*\(\d.*\)$/,'').trim(),
+    status:sc,statusLabel:sl,
+    acv:fmtAcv(p.amount),rawAmount:parseFloat(p.amount)||0,
+    orgSize:c.organization_size||'Not on record',orgSizeClass:mapOrgSizeClass(c.organization_size),
+    srcClass:isSA?'b-swadv':mapSrcClass(c.hs_analytics_source),
+    src:isSA?'Software Advice':mapSrcLabel(c),
+    firstPage:cleanUrl(c.hs_analytics_first_url),
+    firstConv:c.first_conversion_event_name?c.first_conversion_event_name.replace(/^.*?:\s*/,'').replace(' - blueBrix',''):'—',
+    contact:`${c.firstname||''} ${c.lastname||''}`.trim()||'—',
+    title:c.jobtitle||'—',
+    org_type:p.organization_type||'',
+    icp_niche:p.icp_niche||'',
+    createdate:p.createdate,dealStage:p.dealstage,
+  };
+}
+
+// ══════════════════════════════════════
+// METRICS
+// ══════════════════════════════════════
+function updateMetrics(sk,rows){
+  const rr=rows.filter(r=>!r._divider);
+  const tot=rr.length,act=rr.filter(r=>r.status==='b-sql'||r.status==='b-active').length;
+  const acv=rr.reduce((s,r)=>s+(r.rawAmount||0),0);
+  const org=rr.filter(r=>r.srcClass==='b-organic').length;
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v};
+  set(`${sk}-m-total`,tot);set(`${sk}-m-acv`,fmtAcv(acv));set(`${sk}-m-org`,tot?Math.round(org/tot*100)+'%':'—');
+  set(`${sk}-m-sub`,`${act} active · ${tot-act} past`);set(`${sk}-m-orgsub`,`${org} of ${tot} deals`);
+}
+
+// ══════════════════════════════════════
+// DATE FILTER
+// ══════════════════════════════════════
+function getDateRange(){
+  const f=document.getElementById('dateFrom').value,t=document.getElementById('dateTo').value;
+  return{fromMs:f?new Date(f).getTime():new Date('2025-01-01').getTime(),toMs:t?new Date(t).getTime()+86399999:Date.now()};
+}
+function onDateChange(){
+  const cached=localStorage.getItem('hs_synced_data');
+  if(cached){try{applyData(JSON.parse(cached));showBanner('ok','✓ Date filter applied')}catch{}}
+}
+document.getElementById('dateTo').value=new Date().toISOString().split('T')[0];
+
+// ══════════════════════════════════════
+// APPLY DATA
+// ══════════════════════════════════════
+function applyData(data){
+  const{fromMs,toMs}=getDateRange();
+  ['sql','demo','opp'].forEach(sk=>{
+    let rows=(data[sk]||[]).map(r=>{
+      if(r._divider)return r;
+      const cd=r.createdate?new Date(r.createdate).getTime():0;
+      return(cd>=fromMs&&cd<=toMs)?r:null;
+    }).filter(Boolean);
+    const cleaned=[];
+    rows.forEach((r,i)=>{
+      if(r._divider){const hasNext=rows.slice(i+1).some(x=>!x._divider);if(hasNext)cleaned.push(r);}
+      else cleaned.push(r);
+    });
+    renderTable(sk,cleaned);
+    updateMetrics(sk,cleaned);
+  });
+  if(data.syncedAt){
+    const d=new Date(data.syncedAt);
+    document.getElementById('lastSync').textContent=
+      d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+
+      d.toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' IST';
+  }
+}
+
+// ══════════════════════════════════════
+// SYNC
+// ══════════════════════════════════════
+function setProgress(pct,msg){document.getElementById('syncFill').style.width=pct+'%';document.getElementById('syncStep').textContent=msg}
+function addLog(msg,type=''){const log=document.getElementById('syncLog'),d=document.createElement('div');d.className=type;d.textContent=(type==='ok'?'✓ ':type==='er'?'✗ ':'→ ')+msg;log.appendChild(d);log.scrollTop=log.scrollHeight}
+
+async function startSync(){
+  const token=getToken();if(!token){document.getElementById('tokenOverlay').classList.add('show');return}
+  const{fromMs,toMs}=getDateRange();
+  const btn=document.getElementById('syncBtn');btn.disabled=true;btn.classList.add('spinning');
+  document.getElementById('syncOverlay').classList.add('show');document.getElementById('syncLog').innerHTML='';
+  setProgress(0,'Setting up HubSpot properties...');
+
+  try{
+    // Step 0: Ensure properties exist
+    await ensureProperties(token);
+    setProgress(15,'Fetching SQL deals...');
+
+    const allData={syncedAt:new Date().toISOString()};
+    const stageKeys=['sql','demo','opp'],stageNames=['SQL','Pres/Demo','Opportunity'];
+
+    for(let i=0;i<stageKeys.length;i++){
+      const sk=stageKeys[i],sn=stageNames[i];
+      addLog(`Fetching ${sn} deals...`);
+      setProgress(15+i*25,`Fetching ${sn} deals...`);
+      const deals=await fetchDeals(sk,token,fromMs,toMs);
+      addLog(`${deals.length} ${sn} deals found`,'ok');
+      setProgress(22+i*25,`Fetching contacts for ${sn}...`);
+      const contactMap=await fetchContacts(deals.map(d=>d.id),token);
+      const cfg=STAGES[sk];
+      const rows=deals.map(d=>buildRow(d,contactMap[d.id],cfg.id))
+        .sort((a,b)=>{const o={'b-sql':0,'b-active':0,'b-opp':1,'b-demo':1,'b-won':2,'b-lost':3,'b-hold':4},ao=o[a.status]??3,bo=o[b.status]??3;return ao!==bo?ao-bo:b.rawAmount-a.rawAmount});
+      // Insert dividers
+      const grouped=[];let lastStatus=null;
+      const sectionLabel=(s,n)=>({'b-sql':'Currently in SQL','b-active':'Currently active','b-opp':'→ Advanced to opportunity','b-demo':'→ Advanced to pres/demo','b-won':'Closed won','b-lost':'Closed lost','b-hold':'On hold'}[s]||s)+` — ${n} ${n===1?'deal':'deals'}`;
+      rows.forEach(r=>{if(r.status!==lastStatus){grouped.push({_divider:sectionLabel(r.status,rows.filter(x=>x.status===r.status).length)});lastStatus=r.status}grouped.push(r)});
+      allData[sk]=grouped;
+      addLog(`${sn} done`,'ok');
+    }
+
+    setProgress(88,'Saving to GitHub database...');
+    // Save to GitHub if configured
+    let ghSaved=false;
+    if(_syncGHSave) ghSaved=await _syncGHSave(allData);
+    // Also save to localStorage as backup
+    localStorage.setItem('hs_synced_data',JSON.stringify(allData));
+    applyData(allData);
+    setProgress(100,'Sync complete!');
+    addLog('All stages synced','ok');
+    const dealCount=['sql','demo','opp'].reduce((s,sk)=>s+(allData[sk]||[]).filter(r=>!r._divider).length,0);
+
+    setTimeout(()=>{
+      document.getElementById('syncOverlay').classList.remove('show');
+      showBanner('ok',`✓ Synced ${dealCount} deals from HubSpot${ghSaved?' → saved to GitHub database':''}`);
+    },600);
+  }catch(err){
+    console.error(err);addLog(err.message,'er');setProgress(100,'Sync failed');
+    if(err.message.includes('Failed to fetch')||err.message.includes('NetworkError'))document.getElementById('corsNote').classList.add('show');
+    setTimeout(()=>{document.getElementById('syncOverlay').classList.remove('show');showBanner('err',`✗ Sync failed: ${err.message}`)},1200);
+  }finally{btn.disabled=false;btn.classList.remove('spinning')}
+}
+
+function onSyncClick(){const t=getToken();if(!t)document.getElementById('tokenOverlay').classList.add('show');else startSync()}
+
+// ══════════════════════════════════════
+// BANNER
+// ══════════════════════════════════════
+function showBanner(type,msg){
+  const b=document.getElementById('banner');
+  b.className='banner '+type;
+  b.innerHTML=msg+`<span class="banner-x" onclick="this.parentElement.className='banner'">×</span>`;
+  setTimeout(()=>{b.className='banner'},6000);
+}
+
+// ══════════════════════════════════════
+// STAGE / TAB SWITCHING
+// ══════════════════════════════════════
+function switchStage(s){document.querySelectorAll('.stage-panel').forEach(p=>p.classList.remove('active'));document.getElementById('stage-'+s).classList.add('active');renderCharts(s)}
+function showTab(stage,tab){const panel=document.getElementById('stage-'+stage);panel.querySelectorAll('.tab-content').forEach(el=>el.classList.remove('active'));panel.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));document.getElementById(stage+'-'+tab).classList.add('active');panel.querySelectorAll('.tab')[['overview','source','journey'].indexOf(tab)].classList.add('active');renderCharts(stage)}
+
+// ══════════════════════════════════════
+// CHARTS
+// ══════════════════════════════════════
+const charts={};
+function renderCharts(s){
+  const C={g:'#1a9e6e',b:'#1a5fa8',a:'#e89a1a',p:'#4a3ab5',sw:'#c4528e',off:'#9b9b96',r:'#E24B4A',won:'#137a55'};
+  if(s==='sql'&&!charts['sql-sc']&&document.getElementById('sql-sc')){
+    charts['sql-sc']=new Chart(document.getElementById('sql-sc'),{type:'doughnut',data:{labels:['Organic','Direct','Paid','Software Advice','Offline'],datasets:[{data:[25,5,5,1,1],backgroundColor:[C.g,C.a,C.b,C.sw,C.off],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'63%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.raw+' deals'}}}}});
+    charts['sql-oc']=new Chart(document.getElementById('sql-oc'),{type:'bar',data:{labels:['Organic','Direct','Paid','Sw. Advice','Offline'],datasets:[{label:'Active SQL',data:[6,2,0,0,0],backgroundColor:C.b},{label:'→ Pres/demo',data:[5,1,0,0,0],backgroundColor:C.g},{label:'→ Opportunity',data:[2,0,0,0,0],backgroundColor:C.p},{label:'Closed won',data:[1,0,0,0,0],backgroundColor:C.won},{label:'Closed lost',data:[9,2,5,1,1],backgroundColor:C.r},{label:'On hold',data:[1,0,1,0,0],backgroundColor:C.a}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{stepSize:2},grid:{color:'rgba(0,0,0,0.04)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.raw}}}}});
+  }
+  if(s==='demo'&&!charts['demo-sc']&&document.getElementById('demo-sc')){
+    charts['demo-sc']=new Chart(document.getElementById('demo-sc'),{type:'doughnut',data:{labels:['Organic','Direct','Paid / paid lead'],datasets:[{data:[14,3,3],backgroundColor:[C.g,C.a,C.b],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'63%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.raw+' deals'}}}}});
+    charts['demo-oc']=new Chart(document.getElementById('demo-oc'),{type:'bar',data:{labels:['Organic','Direct','Paid / paid lead'],datasets:[{label:'Active pres/demo',data:[4,1,0],backgroundColor:C.b},{label:'→ Opportunity',data:[1,0,0],backgroundColor:C.p},{label:'Closed won',data:[1,0,0],backgroundColor:C.won},{label:'Closed lost',data:[8,2,3],backgroundColor:C.r}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,0.04)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.raw}}}}});
+  }
+  if(s==='opp'&&!charts['opp-sc']&&document.getElementById('opp-sc')){
+    charts['opp-sc']=new Chart(document.getElementById('opp-sc'),{type:'doughnut',data:{labels:['Organic','Paid','Social','Other'],datasets:[{data:[9,2,1,1],backgroundColor:[C.g,C.b,C.p,C.off],borderWidth:0}]},options:{responsive:true,maintainAspectRatio:false,cutout:'63%',plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.label+': '+ctx.raw+' deals'}}}}});
+    charts['opp-oc']=new Chart(document.getElementById('opp-oc'),{type:'bar',data:{labels:['Organic','Paid','Social','Other'],datasets:[{label:'Active opp',data:[2,0,1,0],backgroundColor:C.g},{label:'→ SQL',data:[1,0,0,0],backgroundColor:C.b},{label:'Closed won',data:[1,0,0,0],backgroundColor:C.won},{label:'Closed lost',data:[2,2,0,0],backgroundColor:C.r},{label:'On hold',data:[2,0,0,1],backgroundColor:C.a}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{stacked:true,grid:{display:false}},y:{stacked:true,beginAtZero:true,ticks:{stepSize:1},grid:{color:'rgba(0,0,0,0.04)'}}},plugins:{legend:{display:false},tooltip:{callbacks:{label:ctx=>' '+ctx.dataset.label+': '+ctx.raw}}}}});
+  }
+}
+
+// ══════════════════════════════════════
+// INIT
+// ══════════════════════════════════════
+document.addEventListener('DOMContentLoaded', async ()=>{
+  ['sql','demo','opp'].forEach(s=>renderTable(s,SEED[s]));
+  renderCharts('sql');
+  // If GitHub is configured, load from GitHub; otherwise fall back to localStorage
+  if(GHC.user && GHC.repo){
+    const data = await ghLoadData();
+    if(!data){
+      // Fall back to localStorage cache if GitHub fails
+      const cached=localStorage.getItem('hs_synced_data');
+      if(cached){try{applyData(JSON.parse(cached))}catch{}}
+    }
+  } else {
+    // Not configured yet
+    const cached=localStorage.getItem('hs_synced_data');
+    if(cached){try{applyData(JSON.parse(cached));setDb('ok','Loaded from local cache');}catch{}}
+    else {
+      setDb('err','Not configured — click ⚙ Settings to connect GitHub and HubSpot');
+      ghOpenSetup();
+    }
+    document.getElementById('lastSync').textContent='Never synced';
+  }
+});
+
+// ══════════════════════════════════════
+// GITHUB DATABASE CONFIG
+// ══════════════════════════════════════
+const GH_API = 'https://api.github.com';
+const DB_PATH = 'data/deals.json';
+
+const GHC = {
+  get user()    { return localStorage.getItem('gh_user')||'' },
+  get repo()    { return localStorage.getItem('gh_repo')||'' },
+  get token()   { return localStorage.getItem('gh_token')||'' },
+  get hsToken() { return localStorage.getItem('hs_private_token')||'' },
+  set user(v)   { localStorage.setItem('gh_user',v) },
+  set repo(v)   { localStorage.setItem('gh_repo',v) },
+  set token(v)  { localStorage.setItem('gh_token',v) },
+  set hsToken(v){ localStorage.setItem('hs_private_token',v) },
+  get ok(){ return !!(this.user&&this.repo&&this.token&&this.hsToken) },
+};
+
+// SETUP PANEL
+function ghTab(t){
+  const ts=['repo','ghtoken','hstoken'];
+  document.querySelectorAll('.gh-tab').forEach((el,i)=>el.classList.toggle('active',ts[i]===t));
+  document.querySelectorAll('.gh-pane').forEach(p=>p.classList.remove('active'));
+  document.getElementById('gh-pane-'+t).classList.add('active');
+}
+function ghOpenSetup(){
+  document.getElementById('gh-user').value=GHC.user;
+  document.getElementById('gh-repo').value=GHC.repo;
+  document.getElementById('gh-token').value=GHC.token;
+  document.getElementById('hs-token-inp').value=GHC.hsToken;
+  document.getElementById('ghOverlay').classList.add('show');
+}
+function ghCloseSetup(){ document.getElementById('ghOverlay').classList.remove('show'); }
+function ghSaveSetup(){
+  const u=document.getElementById('gh-user').value.trim();
+  const r=document.getElementById('gh-repo').value.trim();
+  const g=document.getElementById('gh-token').value.trim();
+  const h=document.getElementById('hs-token-inp').value.trim();
+  if(!u||!r){alert('Please enter your GitHub username and repo name.');ghTab('repo');return}
+  if(!g){alert('Please enter your GitHub Personal Access Token.');ghTab('ghtoken');return}
+  if(!h){alert('Please enter your HubSpot Private App Token.');ghTab('hstoken');return}
+  GHC.user=u;GHC.repo=r;GHC.token=g;GHC.hsToken=h;
+  // Also sync to old keys so existing code works
+  localStorage.setItem('hs_private_token',h);
+  ghCloseSetup();
+  ghLoadData().then(()=>{ if(!_ghData) startSync(); });
+}
+function ghVis(id,btn){
+  const i=document.getElementById(id);
+  i.type=i.type==='password'?'text':'password';
+  btn.textContent=i.type==='password'?'show':'hide';
+}
+
+// DB STATUS
+function setDb(state,msg){
+  const d=document.getElementById('dbDot');
+  d.className='db-dot '+(state==='ok'?'ok':state==='err'?'err':'loading');
+  document.getElementById('dbMsg').textContent=msg;
+}
+
+// LOAD FROM GITHUB
+let _ghData=null;
+async function ghLoadData(){
+  setDb('loading','Loading data from GitHub...');
+  try{
+    const url=`https://raw.githubusercontent.com/${GHC.user}/${GHC.repo}/main/${DB_PATH}?v=${Date.now()}`;
+    const res=await fetch(url);
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data=await res.json();
+    _ghData=data;
+    applyData(data);
+    const t=data.syncedAt?new Date(data.syncedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(data.syncedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' IST':'never';
+    setDb('ok',`GitHub database connected · Last synced ${t}`);
+    return data;
+  }catch(err){
+    setDb('err',`Could not load data/deals.json — ${err.message}. Click Sync to create it.`);
+    return null;
+  }
+}
+
+// SAVE TO GITHUB
+async function ghSaveData(data){
+  if(!GHC.token||!GHC.user||!GHC.repo){ addLog('GitHub config missing','er'); return false; }
+  addLog('Saving to GitHub (data/deals.json)...');
+  try{
+    // Get current SHA if file exists
+    let sha=null;
+    try{
+      const r=await fetch(`${GH_API}/repos/${GHC.user}/${GHC.repo}/contents/${DB_PATH}`,{headers:{'Authorization':`Bearer ${GHC.token}`,'Accept':'application/vnd.github.v3+json'}});
+      if(r.ok){const j=await r.json();sha=j.sha;}
+    }catch{}
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
+    const body={message:`sync: update deals.json ${new Date().toISOString()}`,content,...(sha?{sha}:{})};
+    const res=await fetch(`${GH_API}/repos/${GHC.user}/${GHC.repo}/contents/${DB_PATH}`,{method:'PUT',headers:{'Authorization':`Bearer ${GHC.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
+    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||`GitHub API ${res.status}`);}
+    addLog(`Saved to GitHub: ${DB_PATH}`,'ok');
+    _ghData=data;
+    return true;
+  }catch(err){addLog(`GitHub save failed: ${err.message}`,'er');return false;}
+}
+
+// PATCH SAVE PROPERTY TO ALSO WRITE TO GITHUB
+const _origSaveProperty = savePropertyToHubSpot;
+async function savePropertyToHubSpot(dealId, propName, value, selectEl){
+  // Update in-memory data
+  if(_ghData){
+    ['sql','demo','opp'].forEach(sk=>{
+      (_ghData[sk]||[]).forEach(r=>{ if(r.dealId===String(dealId)){r[propName]=value;} });
+    });
+  }
+  // Call original HS save
+  await _origSaveProperty(dealId, propName, value, selectEl);
+  // Also save to GitHub
+  if(_ghData){
+    const ghOk=await ghSaveData(_ghData);
+    if(ghOk) setDb('ok',`GitHub database updated · just now`);
+  }
+}
+
+// PATCH SYNC TO SAVE TO GITHUB AFTER HUBSPOT FETCH
+const _origStartSync = startSync;
+async function startSync(){
+  // Override saveToGitHub hook in sync flow
+  _syncGHSave = async (data) => {
+    const ok = await ghSaveData(data);
+    if(ok){
+      _ghData=data;
+      const t=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' IST';
+      setDb('ok',`GitHub database updated · Synced ${t}`);
+    }
+    return ok;
+  };
+  await _origStartSync();
+}
+let _syncGHSave=null;
+
+</script>
+</body>
+</html>
