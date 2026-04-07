@@ -207,10 +207,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .col-badge{display:inline-block;font-size:8px;font-weight:600;padding:1px 5px;border-radius:3px;background:var(--green-lt);color:var(--green-tx);letter-spacing:.05em;text-transform:uppercase;margin-left:4px;vertical-align:middle}
 
 /* DB STATUS BAR */
-.db-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:5px 1.75rem;display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--text-2)}
-.db-dot{width:7px;height:7px;border-radius:50%;background:#ccc;flex-shrink:0}
-.db-dot.ok{background:var(--green)}.db-dot.err{background:var(--red)}.db-dot.loading{background:var(--amber);animation:ghp .8s infinite}
-@keyframes ghp{0%,100%{opacity:1}50%{opacity:.35}}
 .db-action{margin-left:auto;font-size:11px;color:var(--green);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:0}
 .gh-overlay{display:none;position:fixed;inset:0;background:rgba(245,244,240,.92);backdrop-filter:blur(6px);z-index:600;align-items:center;justify-content:center;padding:1rem}
 .gh-overlay.show{display:flex}
@@ -236,116 +232,48 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 .gh-primary:hover{background:var(--green-dk)}
 .gh-ghost{flex:1;background:var(--surface2);color:var(--text);border:1px solid var(--border-md);border-radius:var(--radius);padding:10px;font-size:13px;font-weight:500;font-family:'DM Sans',sans-serif;cursor:pointer}
 .gh-note{font-size:11px;color:var(--text-3);margin-top:.7rem;line-height:1.55}
+
+/* ── Filter / sort bar ──────────── */
+.fbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:9px 0 12px;margin-bottom:.6rem;border-bottom:1px solid var(--border)}
+.fbar .flbl{font-size:10.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-3);white-space:nowrap}
+.fsel{appearance:none;background:var(--surface2) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5'%3E%3Cpath fill='%239b9b96' d='M0 0l4 5 4-5z'/%3E%3C/svg%3E") no-repeat right 8px center;background-size:8px;border:1px solid var(--border-md);border-radius:7px;padding:5px 24px 5px 10px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text);cursor:pointer;min-width:148px}
+.fsel:focus{outline:none;border-color:var(--green)}
+.sbt{display:flex;align-items:center;gap:4px;background:var(--surface2);border:1px solid var(--border-md);border-radius:7px;padding:5px 11px;font-size:12px;font-weight:500;font-family:'DM Sans',sans-serif;color:var(--text-2);cursor:pointer;white-space:nowrap;transition:all .15s}
+.sbt:hover{border-color:var(--green);color:var(--green)}
+.sbt.on{background:var(--green-lt);border-color:var(--green);color:var(--green-tx)}
+.sarr{font-size:10px;opacity:.6}
+.frst{font-size:11.5px;color:var(--text-3);cursor:pointer;background:none;border:none;font-family:'DM Sans',sans-serif;padding:4px 7px;border-radius:5px}
+.frst:hover{color:var(--red);background:var(--red-lt)}
+.fcnt{font-size:11px;color:var(--text-3);font-family:'DM Mono',monospace}
+/* ── ICP summary box ────────────── */
+.icpbox{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.2rem 1.35rem;margin-bottom:1.15rem}
+.icph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:8px}
+.icptitle{font-size:13.5px;font-weight:600}
+.icpsub{font-size:11px;color:var(--text-3);margin-top:2px}
+.icpnums{display:flex;gap:16px}
+.icpnum{text-align:center}
+.icpnv{font-size:19px;font-weight:700;line-height:1.1}
+.icpnl{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-top:3px}
+.icpleg{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:.8rem}
+.icplr{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--text-2)}
+.icpd{width:9px;height:9px;border-radius:2px;flex-shrink:0}
+.icpgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.icpch{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-3);margin-bottom:.55rem}
+.nbr{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.nbl{font-size:11px;color:var(--text-2);width:190px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.nbt{flex:1;background:var(--surface2);border-radius:3px;height:14px;overflow:hidden}
+.nbf{height:100%;border-radius:3px;display:flex;align-items:center;padding-left:5px;font-size:10px;font-weight:600;min-width:18px;transition:width .35s}
+.itg{display:inline-block;font-size:8.5px;font-weight:700;padding:1px 5px;border-radius:3px;letter-spacing:.04em;text-transform:uppercase;margin-left:4px;vertical-align:middle;line-height:1.5}
+.itg-c{background:#e8f7f1;color:#0e5c3f}.itg-a{background:#fdf0e0;color:#8a4f0a}.itg-o{background:#f2f2f0;color:#777770}
+.otr{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--border)}
+.otr:last-child{border-bottom:none}
+.otn{font-size:12px;font-weight:500}.otc{font-size:12px;font-family:'DM Mono',monospace;color:var(--text-2)}
+.otp{font-size:10.5px;color:var(--text-3);margin-left:6px}
+
 </style>
 </head>
 <body>
 
-<!-- GITHUB SETUP OVERLAY -->
-<div class="gh-overlay" id="ghOverlay">
-  <div class="gh-card">
-    <h2>⚙️ Dashboard setup</h2>
-    <p>This dashboard uses your GitHub repo as a live database. Deal data is stored in <code>data/deals.json</code> inside your repo and synced from HubSpot. Takes 3 minutes to set up.</p>
-    <div class="gh-tabs">
-      <button class="gh-tab active" onclick="ghTab('repo')">1 · GitHub repo</button>
-      <button class="gh-tab" onclick="ghTab('ghtoken')">2 · GitHub token</button>
-      <button class="gh-tab" onclick="ghTab('hstoken')">3 · HubSpot token</button>
-    </div>
-    <div id="gh-pane-repo" class="gh-pane active">
-      <div class="gh-field"><label>Your GitHub username</label><input class="gh-inp" id="gh-user" type="text" placeholder="e.g. kapilnandakumar" /></div>
-      <div class="gh-field"><label>Your GitHub repository name</label><input class="gh-inp" id="gh-repo" type="text" placeholder="e.g. bluebrix-dashboard" /></div>
-      <p style="font-size:12px;color:var(--text-3);margin-top:-.3rem">Your live URL: <code>https://&lt;username&gt;.github.io/&lt;repo&gt;</code></p>
-    </div>
-    <div id="gh-pane-ghtoken" class="gh-pane">
-      <div class="gh-steps"><ol>
-        <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></li>
-        <li>Name it <strong>blueBrix Dashboard</strong></li>
-        <li>Expiration → <strong>No expiration</strong></li>
-        <li>Under Scopes → tick <strong><code>repo</code></strong></li>
-        <li>Click <strong>Generate token</strong> → copy it</li>
-      </ol></div>
-      <div class="gh-field"><label>GitHub Personal Access Token <code>ghp_...</code></label>
-        <div class="gh-inp-row"><input class="gh-inp" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('gh-token',this)">show</button></div>
-      </div>
-      <p style="font-size:11px;color:var(--text-3)">This lets the Sync button write <code>data/deals.json</code> to your repo. Stored only in your browser.</p>
-    </div>
-    <div id="gh-pane-hstoken" class="gh-pane">
-      <div class="gh-steps"><ol>
-        <li>Go to <a href="https://app.hubspot.com/integrations-settings/3411399/private-apps" target="_blank">HubSpot → Settings → Private Apps</a></li>
-        <li>Create app → name it <strong>blueBrix Dashboard</strong></li>
-        <li>Scopes: <code>crm.objects.deals.read</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.contacts.read</code>, <code>crm.schemas.deals.write</code></li>
-        <li>Create app → copy token (starts with <code>pat-na1-</code>)</li>
-      </ol></div>
-      <div class="gh-field"><label>HubSpot Private App Token <code>pat-na1-...</code></label>
-        <div class="gh-inp-row"><input class="gh-inp" id="hs-token-inp" type="password" placeholder="pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('hs-token-inp',this)">show</button></div>
-      </div>
-    </div>
-    <div class="gh-actions">
-      <button class="gh-primary" onclick="ghSaveSetup()">Save &amp; sync now</button>
-      <button class="gh-ghost" onclick="ghCloseSetup()">Load data only</button>
-    </div>
-    <p class="gh-note">⚠ All tokens stored in localStorage only. Never sent anywhere except directly to api.github.com and api.hubapi.com. Do not use on a shared computer — for team deployments, use a backend proxy instead.</p>
-  </div>
-</div>
-
-<!-- DB STATUS BAR -->
-<div class="db-bar" id="dbBar">
-  <div class="db-dot loading" id="dbDot"></div>
-  <span id="dbMsg">Loading data from GitHub...</span>
-  <button class="db-action" onclick="ghOpenSetup()">⚙ Settings</button>
-</div>
-
-<!-- GITHUB SETUP OVERLAY -->
-<div class="gh-overlay" id="ghOverlay">
-  <div class="gh-card">
-    <h2>&#9881;&#65039; Dashboard setup</h2>
-    <p>This dashboard stores deal data in <code>data/deals.json</code> inside your GitHub repo — a free, permanent database. Syncs from HubSpot on demand. Takes 3 minutes to set up.</p>
-    <div class="gh-tabs">
-      <button class="gh-tab active" onclick="ghTab('repo')">1 &middot; GitHub repo</button>
-      <button class="gh-tab" onclick="ghTab('ghtoken')">2 &middot; GitHub token</button>
-      <button class="gh-tab" onclick="ghTab('hstoken')">3 &middot; HubSpot token</button>
-    </div>
-    <div id="gh-pane-repo" class="gh-pane active">
-      <div class="gh-field"><label>Your GitHub username</label><input class="gh-inp" id="gh-user" type="text" placeholder="e.g. kapilnandakumar" /></div>
-      <div class="gh-field"><label>Your GitHub repository name</label><input class="gh-inp" id="gh-repo" type="text" placeholder="e.g. bluebrix-dashboard" /></div>
-      <p style="font-size:12px;color:var(--text-3);margin-top:-.3rem">Your live URL will be: <strong>https://&lt;username&gt;.github.io/&lt;repo&gt;</strong></p>
-    </div>
-    <div id="gh-pane-ghtoken" class="gh-pane">
-      <div class="gh-steps"><ol>
-        <li>Go to <a href="https://github.com/settings/tokens/new" target="_blank">github.com/settings/tokens/new</a></li>
-        <li>Name it <strong>blueBrix Dashboard</strong></li>
-        <li>Expiration &rarr; <strong>No expiration</strong></li>
-        <li>Under Scopes &rarr; tick <strong><code>repo</code></strong> (full repository access)</li>
-        <li>Click <strong>Generate token</strong> &rarr; copy it (starts with <code>ghp_</code>)</li>
-      </ol></div>
-      <div class="gh-field"><label>GitHub Personal Access Token <code>ghp_...</code></label>
-        <div class="gh-inp-row"><input class="gh-inp" id="gh-token" type="password" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('gh-token',this)">show</button></div>
-      </div>
-      <p style="font-size:11px;color:var(--text-3)">This lets the Sync button write <code>data/deals.json</code> to your repo. Stored only in your browser's localStorage.</p>
-    </div>
-    <div id="gh-pane-hstoken" class="gh-pane">
-      <div class="gh-steps"><ol>
-        <li>Go to <a href="https://app.hubspot.com/integrations-settings/3411399/private-apps" target="_blank">HubSpot &rarr; Settings &rarr; Private Apps</a></li>
-        <li>Create app &rarr; name it <strong>blueBrix Dashboard</strong></li>
-        <li>Scopes: <code>crm.objects.deals.read</code>, <code>crm.objects.deals.write</code>, <code>crm.objects.contacts.read</code>, <code>crm.schemas.deals.write</code></li>
-        <li>Create app &rarr; copy token (starts with <code>pat-na1-</code>)</li>
-      </ol></div>
-      <div class="gh-field"><label>HubSpot Private App Token <code>pat-na1-...</code></label>
-        <div class="gh-inp-row"><input class="gh-inp" id="hs-token-inp" type="password" placeholder="pat-na1-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" /><button class="gh-vis" onclick="ghVis('hs-token-inp',this)">show</button></div>
-      </div>
-    </div>
-    <div class="gh-actions">
-      <button class="gh-primary" onclick="ghSaveSetup()">Save &amp; sync now</button>
-      <button class="gh-ghost" onclick="ghCloseSetup()">Load data only</button>
-    </div>
-    <p class="gh-note">&#9888; All tokens stored in localStorage only. Never sent anywhere except directly to api.github.com and api.hubapi.com.</p>
-  </div>
-</div>
-<!-- DB STATUS BAR -->
-<div class="db-bar" id="dbBar">
-  <div class="db-dot loading" id="dbDot"></div>
-  <span id="dbMsg">Loading data from GitHub...</span>
-  <button class="db-action" onclick="ghOpenSetup()">&#9881; Settings</button>
-</div>
 <!-- TOKEN PROMPT -->
 <div class="overlay" id="tokenOverlay">
   <div class="prompt-card">
@@ -440,6 +368,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div id="sql-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:290px"><canvas id="sql-oc"></canvas></div></div></div>
     <div id="sql-journey" class="tab-content">
+      <div class="fbar" id="sql-fbar">
+        <span class="flbl">Filter</span>
+        <select class="fsel" id="sql-fot" onchange="doFilter('sql')"><option value="">All org types</option></select>
+        <select class="fsel" id="sql-fniche" onchange="doFilter('sql')"><option value="">All ICP niches</option></select>
+        <span class="flbl" style="margin-left:6px">Sort</span>
+        <button class="sbt" id="sql-sbt-niche" onclick="doSort('sql','icp_niche')">ICP niche <span class="sarr">↕</span></button>
+        <button class="sbt" id="sql-sbt-ot" onclick="doSort('sql','org_type')">Org type <span class="sarr">↕</span></button>
+        <button class="sbt" id="sql-sbt-acv" onclick="doSort('sql','rawAcv')">ACV <span class="sarr">↕</span></button>
+        <button class="frst" onclick="doReset('sql')">✕ Reset</button>
+        <span class="fcnt" id="sql-fcnt"></span>
+      </div>
+      <div class="icpbox" id="sql-icpbox"></div>
+
       <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — SQL stage</div><div class="ins-sub" id="sql-ins-sub">Based on 37 deals</div></div></div><div class="ins-summary">Of 37 SQL deals, only 1 closed won — 2.7% conversion. 8 deals advanced to Opportunity, 21 reached Pres/Demo. Organic search dominates at 68%. The blog "Top EHRs for Behavioral Health" accounts for first-touch on 8 deals. Paid search generates volume with zero closes.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">What's working</div><div class="ins-card-txt">Organic search (Google + Bing) drives 68% of deals. The behavioral health blog and blueEHR product page are highest-converting first-touch assets. Meetings booked via Kapil's link advance at higher rates than generic forms.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">What's not working</div><div class="ins-card-txt">Paid search — 5 deals, all closed lost or on hold, zero advances to Opportunity. Keywords like "ehr company" and "behavioral health software" aren't converting. Review ad targeting urgently.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Persona signal</div><div class="ins-card-txt">Founders, CEOs and Clinical Directors dominate SQL stage. Medium orgs (21–100 users) are the majority. Enterprise orgs (HCRS $576K) appear but need dedicated longer-cycle nurture.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Bing organic signal</div><div class="ins-card-txt">HCRS ($576K), AHDI ($36K) and Italian Home for Children all came from Bing. Consider allocating SEO effort and Bing-specific content for healthcare IT decision-makers.</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Sullivan County — priority</div><div class="ins-card-txt">Sullivan County ($60K) re-entered SQL after re-initiating the RFP. Strong buying signal. Tailor follow-up to public sector procurement requirements and timeline commitments.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Content recommendation</div><div class="ins-card-txt">The "Top EHRs for Behavioral Health" blog drives 8 deals. Create 2–3 supporting articles targeting adjacent queries to widen the organic funnel.</div></div></div></div>
       <div class="card">
         <div class="card-title">Deal journeys · SQL stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
@@ -471,6 +412,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div id="demo-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:270px"><canvas id="demo-oc"></canvas></div></div></div>
     <div id="demo-journey" class="tab-content">
+      <div class="fbar" id="demo-fbar">
+        <span class="flbl">Filter</span>
+        <select class="fsel" id="demo-fot" onchange="doFilter('demo')"><option value="">All org types</option></select>
+        <select class="fsel" id="demo-fniche" onchange="doFilter('demo')"><option value="">All ICP niches</option></select>
+        <span class="flbl" style="margin-left:6px">Sort</span>
+        <button class="sbt" id="demo-sbt-niche" onclick="doSort('demo','icp_niche')">ICP niche <span class="sarr">↕</span></button>
+        <button class="sbt" id="demo-sbt-ot" onclick="doSort('demo','org_type')">Org type <span class="sarr">↕</span></button>
+        <button class="sbt" id="demo-sbt-acv" onclick="doSort('demo','rawAcv')">ACV <span class="sarr">↕</span></button>
+        <button class="frst" onclick="doReset('demo')">✕ Reset</button>
+        <span class="fcnt" id="demo-fcnt"></span>
+      </div>
+      <div class="icpbox" id="demo-icpbox"></div>
+
       <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — Pres/demo stage</div><div class="ins-sub">Based on 20 deals</div></div></div><div class="ins-summary">Of 20 deals that reached Pres/Demo, only 1 closed won (GO Ministries $18K), 2 advanced to Opportunity, 12 closed lost — 60% loss rate. Demos reach the right audience but something in the demo-to-close journey is breaking down. Direct traffic and paid leads perform worse than organic at this stage.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">Winning pattern</div><div class="ins-card-txt">GO Ministries: Organic Google → blueEHR product page (blueehr.com) → "Schedule a Demo" form → Lead Director. Organic intent + product page + structured scheduling is the winning formula.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">High-value losses</div><div class="ins-card-txt">Charak Center ($100.8K, IT Coordinator) and CornerstoneTherapies ($78K, Software Advice) = $178.8K lost ACV. Champion contacts, not decision-makers. Multi-thread earlier — reach economic buyers before the demo.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Demo-to-close gap</div><div class="ins-card-txt">5 active deals stuck in pres/demo. All high-intent organic. Set a maximum 2-week demo-to-decision cadence with a clear next step committed before the demo ends.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Persona insight</div><div class="ins-card-txt">Founders and CEOs not converting at demo stage may indicate pricing concerns. Create a post-demo ROI one-pager for small practice owners (1–20 users).</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Bing organic signal</div><div class="ins-card-txt">AHDI (VP-level, $36K) came via Bing organic — active in pres/demo. Second Bing data point at this stage. Invest in Bing SEO for healthcare IT decision-makers.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">Software Advice ROI</div><div class="ins-card-txt">CornerstoneTherapies (Software Advice, Co-Director) closed lost here. Software Advice may attract evaluators over buyers. Review ICP match criteria before renewing.</div></div></div></div>
       <div class="card">
         <div class="card-title">Deal journeys · Pres/demo stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
@@ -501,6 +455,19 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
     </div>
     <div id="opp-source" class="tab-content"><div class="card"><div class="card-title">Source → outcome</div><div style="position:relative;height:250px"><canvas id="opp-oc"></canvas></div></div></div>
     <div id="opp-journey" class="tab-content">
+      <div class="fbar" id="opp-fbar">
+        <span class="flbl">Filter</span>
+        <select class="fsel" id="opp-fot" onchange="doFilter('opp')"><option value="">All org types</option></select>
+        <select class="fsel" id="opp-fniche" onchange="doFilter('opp')"><option value="">All ICP niches</option></select>
+        <span class="flbl" style="margin-left:6px">Sort</span>
+        <button class="sbt" id="opp-sbt-niche" onclick="doSort('opp','icp_niche')">ICP niche <span class="sarr">↕</span></button>
+        <button class="sbt" id="opp-sbt-ot" onclick="doSort('opp','org_type')">Org type <span class="sarr">↕</span></button>
+        <button class="sbt" id="opp-sbt-acv" onclick="doSort('opp','rawAcv')">ACV <span class="sarr">↕</span></button>
+        <button class="frst" onclick="doReset('opp')">✕ Reset</button>
+        <span class="fcnt" id="opp-fcnt"></span>
+      </div>
+      <div class="icpbox" id="opp-icpbox"></div>
+
       <div class="insights-box"><div class="ins-header"><div class="ins-icon">💡</div><div><div class="ins-title">Actionable insights — Opportunity stage</div><div class="ins-sub">Based on 11 deals</div></div></div><div class="ins-summary">Of 11 deals reaching Opportunity, 4 active ($400K combined), 1 closed won ($18K — GO Ministries), 3 closed lost, 3 on hold. Organic search accounts for 82% — highest of any stage. Every deal started with a research-led journey through blog or product pages.</div><div class="ins-cards"><div class="ins-card ic-g"><div class="ins-card-lbl">Active pipeline — focus</div><div class="ins-card-txt">New Hope Treatment Centers ($306K, Director of Clinical Informatics) is your highest-value active opportunity. Pharmacy Hub ($10.5K) came via LinkedIn — nurture separately with social-specific content.</div></div><div class="ins-card ic-r"><div class="ins-card-lbl">Gladney — lesson learned</div><div class="ins-card-txt">Gladney Center ($24K) closed lost due to non-responsiveness. Contact was Director of Clinical Services — possibly not final decision-maker. Multi-thread: identify both champion and economic buyer early.</div></div><div class="ins-card ic-a"><div class="ins-card-lbl">On-hold deals need action</div><div class="ins-card-txt">Three deals totalling $273.6K on hold: Quality Health Partners ($183.6K), People.Health ($36K), sricanhelp ($54K). Set quarterly check-in cadence with re-engagement offer.</div></div><div class="ins-card ic-b"><div class="ins-card-lbl">Sullivan County — priority</div><div class="ins-card-txt">Sullivan County ($60K) moved back to SQL after re-initiating the RFP. Prioritise RFP compliance, non-profit health references, and a dedicated implementation timeline.</div></div><div class="ins-card ic-p"><div class="ins-card-lbl">Website chat signal</div><div class="ins-card-txt">Quality Health Partners ($183.6K) arrived via website chat on About Us page. Add proactive chat triggers on high-intent pages (Pricing, About Us) to capture more large-org visitors.</div></div><div class="ins-card ic-g"><div class="ins-card-lbl">Winning journey to replicate</div><div class="ins-card-txt">GO Ministries: Organic Google → blueehr.com product page → Schedule a Demo → Lead Director. Your blueprint for Medium-sized non-profit health organisations.</div></div></div></div>
       <div class="card">
         <div class="card-title">Deal journeys · Opportunity stage <span style="font-size:11px;color:var(--text-3);font-weight:400">— Org Type and ICP Niche save directly to HubSpot</span></div>
@@ -516,12 +483,22 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min
 // DROPDOWN OPTIONS
 // ══════════════════════════════════════
 const ORG_TYPE_OPTIONS = [
-  '', 'Behavioral Health', 'Dental', 'Post Acute Care', 'Primary Care',
-  'Enablers', 'Pharma', 'Payers', 'Long Term Care', 'Nursing Homes',
-  'Sleep Health', 'Ortho', 'Multi-Specialty', 'FQHC', 'MSO', 'ACO', 'IPA'
+  '', 'Behavioral Health', 'Specialty Care', 'Primary Care', 'Health-tech',
+  'Government / Regulatory Body', 'Voluntary Non-Profit', 'Voluntary Non-Profit - Church',
+  'Dental', 'Post Acute Care', 'Long Term Care', 'FQHC', 'MSO', 'ACO'
 ];
 const ICP_NICHE_OPTIONS = [
-  '', 'CCBHC', 'CMHC', 'Virtual Care', 'IDD', 'SUD', 'Residential'
+  '',
+  'BH-Outpatient Group Practice','BH-Multi-Site Group Practice','BH-CMHC','BH-CCBHC',
+  'BH-Family/Community Service','BH-IOP/PHP','BH-Private Practice','BH-Residential',
+  'BH-Residential-PRTF','BH-Integrated Care','BH-Virtual Care','BH-IDD','BH-Wellness',
+  'BH-Population Health/CoCM','BH-SUD',
+  'PC-Value-Based Care',
+  'SP-Clinical Research','SP-Surgical Group','SP-Vascular','SP-Dental',
+  "SP-Women's Health",'SP-PM&R/Neuro Rehab','SP-Wellness-Longevity Medicine',
+  'Gov-County Health',
+  'HIT-Population Health Analytics','HIT-Pharmacy & Billing',
+  'HS-Child & Family Services','HS-Community Center','HS-Faith-Based Medical Mission'
 ];
 
 const HS_BASE = 'https://api.hubapi.com';
@@ -549,90 +526,90 @@ const CONTACT_PROPS = [
 const SEED = {
   sql:[
     {_divider:'Currently in SQL — 8 deals'},
-    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'Active SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'',icp_niche:''},
-    {dealId:'58295140196',org:'New Harbor Behavioral Healthcare',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Eric Dyer',title:'Co-Founder & Executive Director',org_type:'',icp_niche:''},
-    {dealId:'56122122653',org:'Agilon Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Request demo (Care coordination)',contact:'Stephanie Buxton',title:'—',org_type:'',icp_niche:''},
-    {dealId:'55433912897',org:'River Root Counseling',status:'b-sql',statusLabel:'Active SQL',acv:'$15K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Danielle Older',title:'CEO',org_type:'',icp_niche:''},
-    {dealId:'50425845305',org:'Evansville Surgical Associates',status:'b-sql',statusLabel:'Active SQL',acv:'$300K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: RCM / outsourcing',conv:'RCM Services page form',contact:'Mark Crummley',title:'Chief Operating Officer',org_type:'',icp_niche:''},
-    {dealId:'51987880112',org:'Life Opportunities Unlimited',status:'b-sql',statusLabel:'Active SQL',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Meetings link (kapil)',conv:'Meetings Link: kapil',contact:'Jennifer Bedrosian',title:'Executive Assistant',org_type:'',icp_niche:''},
-    {dealId:'48946519087',org:'HCRS',status:'b-sql',statusLabel:'Active SQL',acv:'$576K',orgSize:'Enterprise (501+)',orgSizeClass:'b-ent',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Contact form (blueBriX)',contact:'Warren Sergeant',title:'Director of IT',org_type:'',icp_niche:''},
-    {dealId:'48799113140',org:'Emergent Mental Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Carrie Mardula',title:'Founder',org_type:'',icp_niche:''},
+    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'Active SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'Government / Regulatory Body',icp_niche:'Gov-County Health',rawAcv:60000},
+    {dealId:'58295140196',org:'New Harbor Behavioral Healthcare',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Eric Dyer',title:'Co-Founder & Executive Director',org_type:'Behavioral Health',icp_niche:'BH-IOP/PHP',rawAcv:30000},
+    {dealId:'56122122653',org:'Agilon Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Request demo (Care coordination)',contact:'Stephanie Buxton',title:'—',org_type:'Primary Care',icp_niche:'PC-Value-Based Care',rawAcv:30000},
+    {dealId:'55433912897',org:'River Root Counseling',status:'b-sql',statusLabel:'Active SQL',acv:'$15K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Danielle Older',title:'CEO',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:15000},
+    {dealId:'50425845305',org:'Evansville Surgical Associates',status:'b-sql',statusLabel:'Active SQL',acv:'$300K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: RCM / outsourcing',conv:'RCM Services page form',contact:'Mark Crummley',title:'Chief Operating Officer',org_type:'Specialty Care',icp_niche:'SP-Surgical Group',rawAcv:300000},
+    {dealId:'51987880112',org:'Life Opportunities Unlimited',status:'b-sql',statusLabel:'Active SQL',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Meetings link (kapil)',conv:'Meetings Link: kapil',contact:'Jennifer Bedrosian',title:'Executive Assistant',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:48000},
+    {dealId:'48946519087',org:'HCRS',status:'b-sql',statusLabel:'Active SQL',acv:'$576K',orgSize:'Enterprise (501+)',orgSizeClass:'b-ent',srcClass:'b-organic',src:'Organic · Bing',page:'Care coordination page',conv:'Contact form (blueBriX)',contact:'Warren Sergeant',title:'Director of IT',org_type:'Behavioral Health',icp_niche:'BH-CCBHC',rawAcv:576000},
+    {dealId:'48799113140',org:'Emergent Mental Health',status:'b-sql',statusLabel:'Active SQL',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Behavioral health EHR)',contact:'Carrie Mardula',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Virtual Care',rawAcv:30000},
     {_divider:'Advanced to pres/demo — 6 deals'},
-    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'',icp_niche:''},
-    {dealId:'57178148705',org:'Cognitia Organization',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'',icp_niche:''},
-    {dealId:'53451546450',org:'Global Clinical',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'',icp_niche:''},
-    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'',icp_niche:''},
-    {dealId:'48474039196',org:'AHDI',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'',icp_niche:''},
+    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:3000},
+    {dealId:'57178148705',org:'Cognitia Organization',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:4500},
+    {dealId:'53451546450',org:'Global Clinical',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'Specialty Care',icp_niche:'SP-Clinical Research',rawAcv:6000},
+    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:22500},
+    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:1500},
+    {dealId:'48474039196',org:'AHDI',status:'b-demo',statusLabel:'→ Pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'Health-tech',icp_niche:'HIT-Population Health Analytics',rawAcv:36000},
     {_divider:'Advanced to opportunity — 7 deals'},
-    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
-    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
-    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-opp',statusLabel:'→ Opportunity',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'',icp_niche:''},
-    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'',icp_niche:''},
-    {dealId:'45932818334',org:'Sound Dental Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'',icp_niche:''},
-    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'Behavioral Health',icp_niche:'BH-Residential-PRTF',rawAcv:306000},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'Voluntary Non-Profit',icp_niche:'HS-Child & Family Services',rawAcv:24000},
+    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-opp',statusLabel:'→ Opportunity',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:22500},
+    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'Specialty Care',icp_niche:'SP-Vascular',rawAcv:9000},
+    {dealId:'45932818334',org:'Sound Dental Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'Specialty Care',icp_niche:'SP-Dental',rawAcv:24000},
+    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-opp',statusLabel:'→ Opportunity',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:4500},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'Voluntary Non-Profit - Church',icp_niche:'HS-Faith-Based Medical Mission',rawAcv:18000},
     {_divider:'Closed lost — 19 deals'},
-    {dealId:'53696120972',org:'Mindoula',status:'b-lost',statusLabel:'Closed lost',acv:'$270K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Blaise DeLuca',title:'VP, New Initiatives',org_type:'',icp_niche:''},
-    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'',icp_niche:''},
-    {dealId:'51515316814',org:'Integrative Behavioral Health & Medicine',status:'b-lost',statusLabel:'Closed lost',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Wasim Sk',title:'—',org_type:'',icp_niche:''},
-    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'',icp_niche:''},
-    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'46997553017',org:'Blue Longevity',status:'b-lost',statusLabel:'Closed lost',acv:'$64.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueehr.com home page',conv:'Schedule a Demo',contact:'Dilyan Dimitrov',title:'Managing Partner',org_type:'',icp_niche:''},
-    {dealId:'45417065786',org:'WOMENS SPECIALISTS OF NEW MEXICO',status:'b-lost',statusLabel:'Closed lost',acv:'$156K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-offline',src:'Offline / CRM',page:'N/A',conv:'N/A',contact:'Brandy McDonald',title:'Clinical Director',org_type:'',icp_niche:''},
-    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'',icp_niche:''},
-    {dealId:'44206783232',org:'Sdora Wellbeing',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Behavioral health EHR page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Damilola Ajongbolo',title:'CEO',org_type:'',icp_niche:''},
-    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'44951247125',org:'Neuro Rehab Collaborative',status:'b-lost',statusLabel:'Closed lost',acv:'$13.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · ehr healthcare',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Lydia Lennox McNeary',title:'Co Owner',org_type:'',icp_niche:''},
-    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'42804855128',org:'NewLondonCounseling',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (Behavioral health EHR)',contact:'Michelle Sapp',title:'Office Manager',org_type:'',icp_niche:''},
-    {dealId:'42804855400',org:'Primary Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Behavioral health EHR)',contact:'Chris Christopher',title:'Co Founder',org_type:'',icp_niche:''},
-    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
-    {dealId:'42807387787',org:'Paradigm',status:'b-lost',statusLabel:'Closed lost',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · population health mgmt',page:'Care Management solutions (Google Ads)',conv:'Request demo (Patient Engagement)',contact:'Lauren Rashford',title:'VP Clinical Product Solutions',org_type:'',icp_niche:''},
+    {dealId:'53696120972',org:'Mindoula',status:'b-lost',statusLabel:'Closed lost',acv:'$270K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Blaise DeLuca',title:'VP, New Initiatives',org_type:'Behavioral Health',icp_niche:'BH-Population Health/CoCM',rawAcv:270000},
+    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'Behavioral Health',icp_niche:'BH-CMHC',rawAcv:100800},
+    {dealId:'51515316814',org:'Integrative Behavioral Health & Medicine',status:'b-lost',statusLabel:'Closed lost',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Wasim Sk',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Integrated Care',rawAcv:54000},
+    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Residential',rawAcv:12000},
+    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:3000},
+    {dealId:'46997553017',org:'Blue Longevity',status:'b-lost',statusLabel:'Closed lost',acv:'$64.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueehr.com home page',conv:'Schedule a Demo',contact:'Dilyan Dimitrov',title:'Managing Partner',org_type:'Specialty Care',icp_niche:'SP-Wellness-Longevity Medicine',rawAcv:64800},
+    {dealId:'45417065786',org:'WOMENS SPECIALISTS OF NEW MEXICO',status:'b-lost',statusLabel:'Closed lost',acv:'$156K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-offline',src:'Offline / CRM',page:'N/A',conv:'N/A',contact:'Brandy McDonald',title:'Clinical Director',org_type:'Specialty Care',icp_niche:"SP-Women's Health",rawAcv:156000},
+    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'Behavioral Health',icp_niche:'BH-IDD',rawAcv:78000},
+    {dealId:'44206783232',org:'Sdora Wellbeing',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Behavioral health EHR page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Damilola Ajongbolo',title:'CEO',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:22500},
+    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:1500},
+    {dealId:'44951247125',org:'Neuro Rehab Collaborative',status:'b-lost',statusLabel:'Closed lost',acv:'$13.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · ehr healthcare',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Lydia Lennox McNeary',title:'Co Owner',org_type:'Specialty Care',icp_niche:'SP-PM&R/Neuro Rehab',rawAcv:13500},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:7200},
+    {dealId:'42804855128',org:'NewLondonCounseling',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (Behavioral health EHR)',contact:'Michelle Sapp',title:'Office Manager',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:22500},
+    {dealId:'42804855400',org:'Primary Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$30K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Behavioral health EHR)',contact:'Chris Christopher',title:'Co Founder',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:30000},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'Behavioral Health',icp_niche:'BH-Multi-Site Group Practice',rawAcv:42000},
+    {dealId:'42807387787',org:'Paradigm',status:'b-lost',statusLabel:'Closed lost',acv:'$48K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · population health mgmt',page:'Care Management solutions (Google Ads)',conv:'Request demo (Patient Engagement)',contact:'Lauren Rashford',title:'VP Clinical Product Solutions',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:48000},
     {_divider:'On hold — 2 deals'},
-    {dealId:'42804854853',org:'JCC Pittsburgh',status:'b-hold',statusLabel:'On hold',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care coordination',page:'Care coordination page (Google Ads)',conv:'Request demo (Care coordination)',contact:'Alexis Mancuso',title:'Chief Aging Services Officer',org_type:'',icp_niche:''},
-    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'',icp_niche:''},
+    {dealId:'42804854853',org:'JCC Pittsburgh',status:'b-hold',statusLabel:'On hold',acv:'$30K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care coordination',page:'Care coordination page (Google Ads)',conv:'Request demo (Care coordination)',contact:'Alexis Mancuso',title:'Chief Aging Services Officer',org_type:'Voluntary Non-Profit',icp_niche:'HS-Community Center',rawAcv:30000},
+    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'Behavioral Health',icp_niche:'BH-Population Health/CoCM',rawAcv:54000},
   ],
   demo:[
     {_divider:'Currently in pres/demo — 5 deals'},
-    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'',icp_niche:''},
-    {dealId:'57178148705',org:'Cognitia Organization',status:'b-active',statusLabel:'Active pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'',icp_niche:''},
-    {dealId:'53451546450',org:'Global Clinical',status:'b-active',statusLabel:'Active pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'',icp_niche:''},
-    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'48474039196',org:'AHDI',status:'b-active',statusLabel:'Active pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'',icp_niche:''},
+    {dealId:'57539426131',org:'WaldHaven Mental Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Adeyinka Ososanya',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:3000},
+    {dealId:'57178148705',org:'Cognitia Organization',status:'b-active',statusLabel:'Active pres/demo',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Dionne Holliday',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:4500},
+    {dealId:'53451546450',org:'Global Clinical',status:'b-active',statusLabel:'Active pres/demo',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Zach Donisch',title:'CEO',org_type:'Specialty Care',icp_niche:'SP-Clinical Research',rawAcv:6000},
+    {dealId:'51987880112',org:'Base Behavioral Health',status:'b-active',statusLabel:'Active pres/demo',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Care management page',conv:'Request demo (Value-Based Care EHR)',contact:'Ashley Bauer',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:22500},
+    {dealId:'48474039196',org:'AHDI',status:'b-active',statusLabel:'Active pres/demo',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'blueEHR product page',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Jordan Waltz',title:'Vice President',org_type:'Health-tech',icp_niche:'HIT-Population Health Analytics',rawAcv:36000},
     {_divider:'Advanced to opportunity — 2 deals'},
-    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
-    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-opp',statusLabel:'→ Opportunity',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'Behavioral Health',icp_niche:'BH-Residential-PRTF',rawAcv:306000},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'Voluntary Non-Profit',icp_niche:'HS-Child & Family Services',rawAcv:24000},
     {_divider:'Closed won — 1 deal'},
-    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'Voluntary Non-Profit - Church',icp_niche:'HS-Faith-Based Medical Mission',rawAcv:18000},
     {_divider:'Closed lost — 12 deals'},
-    {dealId:'57980007975',org:'Morningstar Health',status:'b-lost',statusLabel:'Closed lost',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Steven Lutes',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'',icp_niche:''},
-    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'',icp_niche:''},
-    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'',icp_niche:''},
-    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-lost',statusLabel:'Closed lost',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'',icp_niche:''},
-    {dealId:'45932818334',org:'Sound Dental Care',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-lost',statusLabel:'Closed lost',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'',icp_niche:''},
-    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'',icp_niche:''},
-    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
+    {dealId:'57980007975',org:'Morningstar Health',status:'b-lost',statusLabel:'Closed lost',acv:'$6K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'Behavioral health EHR page',conv:'Meetings Link: kapil',contact:'Steven Lutes',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:6000},
+    {dealId:'52276088576',org:'Charak Center',status:'b-lost',statusLabel:'Closed lost',acv:'$100.8K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic (blog revisit)',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Emmett Coleman',title:'IT Coordinator',org_type:'Behavioral Health',icp_niche:'BH-CMHC',rawAcv:100800},
+    {dealId:'52276027673',org:'Pink Wellness',status:'b-lost',statusLabel:'Closed lost',acv:'$3K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil',contact:'Pierre Crouch',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:3000},
+    {dealId:'52332106316',org:'Italian Home for Children',status:'b-lost',statusLabel:'Closed lost',acv:'$12K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Contact form (blueBriX)',contact:'Tonya Alexander',title:'—',org_type:'Behavioral Health',icp_niche:'BH-Residential',rawAcv:12000},
+    {dealId:'48987585970',org:'Ohana Behavioral Health Services',status:'b-lost',statusLabel:'Closed lost',acv:'$22.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Catherine Abrams',title:'Executive Program Director',org_type:'Behavioral Health',icp_niche:'BH-Outpatient Group Practice',rawAcv:22500},
+    {dealId:'48535533643',org:'Prime Vascular Care',status:'b-lost',statusLabel:'Closed lost',acv:'$9K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-direct',src:'Direct traffic',page:'blueEHR product page',conv:'Request demo (EHR software)',contact:'Ayorinde Akinrinlola',title:'Founder, CEO',org_type:'Specialty Care',icp_niche:'SP-Vascular',rawAcv:9000},
+    {dealId:'45932818334',org:'Sound Dental Care',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-direct',src:'Direct traffic',page:'Dental practice mgmt page',conv:'Request demo (Dental software)',contact:'Sarah Luetke',title:'Founder',org_type:'Specialty Care',icp_niche:'SP-Dental',rawAcv:24000},
+    {dealId:'45144990495',org:'Resilient Mind Care',status:'b-lost',statusLabel:'Closed lost',acv:'$4.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Bing',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Desmond Ketter',title:'Registered Nurse',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:4500},
+    {dealId:'44462251407',org:'CornerstoneTherapies',status:'b-lost',statusLabel:'Closed lost',acv:'$78K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-swadv',src:'Software Advice',page:'Software Advice listing',conv:'Software Advice enquiry form',contact:'Katherine Davis',title:'Co-Director',org_type:'Behavioral Health',icp_niche:'BH-IDD',rawAcv:78000},
+    {dealId:'43739906950',org:'Oriah Care',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · care management platforms',page:'Care coordination page (Google Ads)',conv:'Request demo (Care integration)',contact:'Aliza Grosh',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:1500},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:7200},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'Behavioral Health',icp_niche:'BH-Multi-Site Group Practice',rawAcv:42000},
   ],
   opp:[
     {_divider:'Currently in opportunity — 4 deals'},
-    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-active',statusLabel:'Active opp',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'',icp_niche:''},
-    {dealId:'44018168389',org:'Pharmacy Hub (Billing)',status:'b-active',statusLabel:'Active opp',acv:'$10.5K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-social',src:'Social · LinkedIn',page:'HubSpot Meetings (LinkedIn referral)',conv:'Meetings Link: sam101',contact:'Devang D',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'',icp_niche:''},
-    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'→ Back to SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'',icp_niche:''},
+    {dealId:'50331654778',org:'New Hope Treatment Centers',status:'b-active',statusLabel:'Active opp',acv:'$306K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Merri-Shannon Herndon',title:'Director of Clinical Informatics',org_type:'Behavioral Health',icp_niche:'BH-Residential-PRTF',rawAcv:306000},
+    {dealId:'44018168389',org:'Pharmacy Hub (Billing)',status:'b-active',statusLabel:'Active opp',acv:'$10.5K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-social',src:'Social · LinkedIn',page:'HubSpot Meetings (LinkedIn referral)',conv:'Meetings Link: sam101',contact:'Devang D',title:'Founder',org_type:'Health-tech',icp_niche:'HIT-Pharmacy & Billing',rawAcv:10500},
+    {dealId:'48790969771',org:'Gladney Center for Adoption',status:'b-lost',statusLabel:'Closed lost',acv:'$24K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Meetings Link: kapil',contact:'Caitlyn Ussery',title:'Director of Clinical Services',org_type:'Voluntary Non-Profit',icp_niche:'HS-Child & Family Services',rawAcv:24000},
+    {dealId:'49530894699',org:'Sullivan County',status:'b-sql',statusLabel:'→ Back to SQL',acv:'$60K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Blog: Top EHRs for Behavioral Health',conv:'Request demo (Value-Based Care EHR)',contact:'Dr. Salif Banse',title:'Director of Community Services',org_type:'Government / Regulatory Body',icp_niche:'Gov-County Health',rawAcv:60000},
     {_divider:'Past opportunity — 7 deals'},
-    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'',icp_niche:''},
-    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'',icp_niche:''},
-    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'',icp_niche:''},
-    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'',icp_niche:''},
-    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'',icp_niche:''},
-    {dealId:'42804850983',org:'People.Health',status:'b-hold',statusLabel:'On hold',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · via blueehr.com',page:'blueEHR product page',conv:'Request demo (Digital Health Platform)',contact:'Zach Smith',title:'Chief Product Officer',org_type:'',icp_niche:''},
-    {dealId:'42804850865',org:'Quality Health Partners',status:'b-hold',statusLabel:'On hold',acv:'$183.6K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page (bluebrix.health)',conv:'Website chat (About Us page)',contact:'Cattien Ngo',title:'Technical Project Specialist',org_type:'',icp_niche:''},
+    {dealId:'49530992545',org:'Noble Path Mental Health',status:'b-lost',statusLabel:'Closed lost',acv:'$1.5K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page',conv:'Meetings Link: kapil/meet-with-bluebrix',contact:'Angela Tarloski',title:'Psychiatric Nurse Practitioner',org_type:'Behavioral Health',icp_niche:'BH-Private Practice',rawAcv:1500},
+    {dealId:'45144611897',org:'GO Ministries',status:'b-won',statusLabel:'Closed won',acv:'$18K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google · via blueehr.com',page:'blueEHR product page (blueehr.com)',conv:'Schedule a Demo (Integrated Care EHR)',contact:'Lynne Peralta',title:'Lead Director',org_type:'Voluntary Non-Profit - Church',icp_niche:'HS-Faith-Based Medical Mission',rawAcv:18000},
+    {dealId:'43475997477',org:'Elite Mindful Health',status:'b-lost',statusLabel:'Closed lost',acv:'$7.2K',orgSize:'Small (1–20)',orgSizeClass:'b-small',srcClass:'b-paid',src:'Paid search · behavioral health software',page:'Behavioral health EHR (Google Ads)',conv:'Request demo (Pricing page)',contact:'Louise Aurelien Buie',title:'Founder',org_type:'Behavioral Health',icp_niche:'BH-Wellness',rawAcv:7200},
+    {dealId:'42804855447',org:'sricanhelp',status:'b-hold',statusLabel:'On hold',acv:'$54K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · Google',page:'Home page (bluebrix.health)',conv:'Request demo (Value-Based Care EHR)',contact:'Sion Fogal',title:'Data Scientist & Project Manager',org_type:'Behavioral Health',icp_niche:'BH-Population Health/CoCM',rawAcv:54000},
+    {dealId:'42807387175',org:'Magnolia TM',status:'b-lost',statusLabel:'Closed lost',acv:'$42K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-paid',src:'Paid search · ehr company',page:'blueEHR product page (Google Ads)',conv:'Request demo (EHR software)',contact:'Danielle Penaranda',title:'Founder / Clinical Director',org_type:'Behavioral Health',icp_niche:'BH-Multi-Site Group Practice',rawAcv:42000},
+    {dealId:'42804850983',org:'People.Health',status:'b-hold',statusLabel:'On hold',acv:'$36K',orgSize:'Medium (21–100)',orgSizeClass:'b-med',srcClass:'b-organic',src:'Organic · via blueehr.com',page:'blueEHR product page',conv:'Request demo (Digital Health Platform)',contact:'Zach Smith',title:'Chief Product Officer',org_type:'Health-tech',icp_niche:'HIT-Population Health Analytics',rawAcv:36000},
+    {dealId:'42804850865',org:'Quality Health Partners',status:'b-hold',statusLabel:'On hold',acv:'$183.6K',orgSize:'Large (101–500)',orgSizeClass:'b-large',srcClass:'b-organic',src:'Organic · Google',page:'blueEHR product page (bluebrix.health)',conv:'Website chat (About Us page)',contact:'Cattien Ngo',title:'Technical Project Specialist',org_type:'Behavioral Health',icp_niche:'BH-CMHC',rawAcv:183600},
   ]
 };
 
@@ -981,11 +958,7 @@ async function startSync(){
     }
 
     setProgress(88,'Saving to GitHub database...');
-    // Save to GitHub if configured
-    let ghSaved=false;
-    if(_syncGHSave) ghSaved=await _syncGHSave(allData);
-    // Also save to localStorage as backup
-    localStorage.setItem('hs_synced_data',JSON.stringify(allData));
+        localStorage.setItem('hs_synced_data',JSON.stringify(allData));
     applyData(allData);
     setProgress(100,'Sync complete!');
     addLog('All stages synced','ok');
@@ -993,7 +966,7 @@ async function startSync(){
 
     setTimeout(()=>{
       document.getElementById('syncOverlay').classList.remove('show');
-      showBanner('ok',`✓ Synced ${dealCount} deals from HubSpot${ghSaved?' → saved to GitHub database':''}`);
+      showBanner('ok',`✓ Synced ${dealCount} deals from HubSpot`);
     },600);
   }catch(err){
     console.error(err);addLog(err.message,'er');setProgress(100,'Sync failed');
@@ -1043,164 +1016,155 @@ function renderCharts(s){
 // ══════════════════════════════════════
 // INIT
 // ══════════════════════════════════════
-document.addEventListener('DOMContentLoaded', async ()=>{
+document.addEventListener('DOMContentLoaded',()=>{
   ['sql','demo','opp'].forEach(s=>renderTable(s,SEED[s]));
   renderCharts('sql');
-  // If GitHub is configured, load from GitHub; otherwise fall back to localStorage
-  if(GHC.user && GHC.repo){
-    const data = await ghLoadData();
-    if(!data){
-      // Fall back to localStorage cache if GitHub fails
-      const cached=localStorage.getItem('hs_synced_data');
-      if(cached){try{applyData(JSON.parse(cached))}catch{}}
-    }
-  } else {
-    // Not configured yet
-    const cached=localStorage.getItem('hs_synced_data');
-    if(cached){try{applyData(JSON.parse(cached));setDb('ok','Loaded from local cache');}catch{}}
-    else {
-      setDb('err','Not configured — click ⚙ Settings to connect GitHub and HubSpot');
-      ghOpenSetup();
-    }
-    document.getElementById('lastSync').textContent='Never synced';
-  }
+  const cached=localStorage.getItem('hs_synced_data');
+  if(cached){try{applyData(JSON.parse(cached))}catch{}}
+  else document.getElementById('lastSync').textContent='Never synced';
 });
 
+
+
 // ══════════════════════════════════════
-// GITHUB DATABASE CONFIG
+// FILTER / SORT / ICP SUMMARY
 // ══════════════════════════════════════
-const GH_API = 'https://api.github.com';
-const DB_PATH = 'data/deals.json';
+const FS={sql:{ot:'',niche:'',sf:'',sd:1},demo:{ot:'',niche:'',sf:'',sd:1},opp:{ot:'',niche:'',sf:'',sd:1}};
 
-const GHC = {
-  get user()    { return localStorage.getItem('gh_user')||'' },
-  get repo()    { return localStorage.getItem('gh_repo')||'' },
-  get token()   { return localStorage.getItem('gh_token')||'' },
-  get hsToken() { return localStorage.getItem('hs_private_token')||'' },
-  set user(v)   { localStorage.setItem('gh_user',v) },
-  set repo(v)   { localStorage.setItem('gh_repo',v) },
-  set token(v)  { localStorage.setItem('gh_token',v) },
-  set hsToken(v){ localStorage.setItem('hs_private_token',v) },
-  get ok(){ return !!(this.user&&this.repo&&this.token&&this.hsToken) },
-};
+function _srcRows(sk){return (window._liveRows&&window._liveRows[sk])||SEED[sk];}
 
-// SETUP PANEL
-function ghTab(t){
-  const ts=['repo','ghtoken','hstoken'];
-  document.querySelectorAll('.gh-tab').forEach((el,i)=>el.classList.toggle('active',ts[i]===t));
-  document.querySelectorAll('.gh-pane').forEach(p=>p.classList.remove('active'));
-  document.getElementById('gh-pane-'+t).classList.add('active');
-}
-function ghOpenSetup(){
-  document.getElementById('gh-user').value=GHC.user;
-  document.getElementById('gh-repo').value=GHC.repo;
-  document.getElementById('gh-token').value=GHC.token;
-  document.getElementById('hs-token-inp').value=GHC.hsToken;
-  document.getElementById('ghOverlay').classList.add('show');
-}
-function ghCloseSetup(){ document.getElementById('ghOverlay').classList.remove('show'); }
-function ghSaveSetup(){
-  const u=document.getElementById('gh-user').value.trim();
-  const r=document.getElementById('gh-repo').value.trim();
-  const g=document.getElementById('gh-token').value.trim();
-  const h=document.getElementById('hs-token-inp').value.trim();
-  if(!u||!r){alert('Please enter your GitHub username and repo name.');ghTab('repo');return}
-  if(!g){alert('Please enter your GitHub Personal Access Token.');ghTab('ghtoken');return}
-  if(!h){alert('Please enter your HubSpot Private App Token.');ghTab('hstoken');return}
-  GHC.user=u;GHC.repo=r;GHC.token=g;GHC.hsToken=h;
-  // Also sync to old keys so existing code works
-  localStorage.setItem('hs_private_token',h);
-  ghCloseSetup();
-  ghLoadData().then(()=>{ if(!_ghData) startSync(); });
-}
-function ghVis(id,btn){
-  const i=document.getElementById(id);
-  i.type=i.type==='password'?'text':'password';
-  btn.textContent=i.type==='password'?'show':'hide';
+function populateDrops(sk,rows){
+  const data=rows.filter(r=>!r._divider);
+  const otEl=document.getElementById(`${sk}-fot`),nEl=document.getElementById(`${sk}-fniche`);
+  if(!otEl||!nEl)return;
+  const po=otEl.value,pn=nEl.value;
+  const ots=[...new Set(data.map(r=>r.org_type).filter(Boolean))].sort();
+  const ns=[...new Set(data.map(r=>r.icp_niche).filter(Boolean))].sort();
+  otEl.innerHTML='<option value="">All org types</option>'+ots.map(v=>`<option${v===po?' selected':''}>${v}</option>`).join('');
+  nEl.innerHTML='<option value="">All ICP niches</option>'+ns.map(v=>`<option${v===pn?' selected':''}>${v}</option>`).join('');
 }
 
-// DB STATUS
-function setDb(state,msg){
-  const d=document.getElementById('dbDot');
-  d.className='db-dot '+(state==='ok'?'ok':state==='err'?'err':'loading');
-  document.getElementById('dbMsg').textContent=msg;
+function doFilter(sk){
+  FS[sk].ot=document.getElementById(`${sk}-fot`)?.value||'';
+  FS[sk].niche=document.getElementById(`${sk}-fniche`)?.value||'';
+  refreshJourney(sk);
+}
+function doSort(sk,field){
+  const s=FS[sk];
+  if(s.sf===field)s.sd*=-1; else{s.sf=field;s.sd=1;}
+  const map={icp_niche:`${sk}-sbt-niche`,org_type:`${sk}-sbt-ot`,rawAcv:`${sk}-sbt-acv`};
+  document.querySelectorAll(`#stage-${sk} .sbt`).forEach(b=>{b.classList.remove('on');b.querySelector('.sarr').textContent='↕';});
+  const btn=document.getElementById(map[field]);
+  if(btn){btn.classList.add('on');btn.querySelector('.sarr').textContent=s.sd===1?'↑':'↓';}
+  refreshJourney(sk);
+}
+function doReset(sk){
+  FS[sk]={ot:'',niche:'',sf:'',sd:1};
+  const otEl=document.getElementById(`${sk}-fot`),nEl=document.getElementById(`${sk}-fniche`);
+  if(otEl)otEl.value='';if(nEl)nEl.value='';
+  document.querySelectorAll(`#stage-${sk} .sbt`).forEach(b=>{b.classList.remove('on');b.querySelector('.sarr').textContent='↕';});
+  refreshJourney(sk);
 }
 
-// LOAD FROM GITHUB
-let _ghData=null;
-async function ghLoadData(){
-  setDb('loading','Loading data from GitHub...');
-  try{
-    const url=`https://raw.githubusercontent.com/${GHC.user}/${GHC.repo}/main/${DB_PATH}?v=${Date.now()}`;
-    const res=await fetch(url);
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data=await res.json();
-    _ghData=data;
-    applyData(data);
-    const t=data.syncedAt?new Date(data.syncedAt).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date(data.syncedAt).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' IST':'never';
-    setDb('ok',`GitHub database connected · Last synced ${t}`);
-    return data;
-  }catch(err){
-    setDb('err',`Could not load data/deals.json — ${err.message}. Click Sync to create it.`);
-    return null;
-  }
-}
-
-// SAVE TO GITHUB
-async function ghSaveData(data){
-  if(!GHC.token||!GHC.user||!GHC.repo){ addLog('GitHub config missing','er'); return false; }
-  addLog('Saving to GitHub (data/deals.json)...');
-  try{
-    // Get current SHA if file exists
-    let sha=null;
-    try{
-      const r=await fetch(`${GH_API}/repos/${GHC.user}/${GHC.repo}/contents/${DB_PATH}`,{headers:{'Authorization':`Bearer ${GHC.token}`,'Accept':'application/vnd.github.v3+json'}});
-      if(r.ok){const j=await r.json();sha=j.sha;}
-    }catch{}
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(data,null,2))));
-    const body={message:`sync: update deals.json ${new Date().toISOString()}`,content,...(sha?{sha}:{})};
-    const res=await fetch(`${GH_API}/repos/${GHC.user}/${GHC.repo}/contents/${DB_PATH}`,{method:'PUT',headers:{'Authorization':`Bearer ${GHC.token}`,'Content-Type':'application/json','Accept':'application/vnd.github.v3+json'},body:JSON.stringify(body)});
-    if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.message||`GitHub API ${res.status}`);}
-    addLog(`Saved to GitHub: ${DB_PATH}`,'ok');
-    _ghData=data;
+function filteredRows(sk){
+  const s=FS[sk],src=_srcRows(sk);
+  let rows=src.filter(r=>{
+    if(r._divider)return false;
+    if(s.ot&&r.org_type!==s.ot)return false;
+    if(s.niche&&r.icp_niche!==s.niche)return false;
     return true;
-  }catch(err){addLog(`GitHub save failed: ${err.message}`,'er');return false;}
+  });
+  if(s.sf){rows=[...rows].sort((a,b)=>{
+    const av=a[s.sf]||'',bv=b[s.sf]||'';
+    if(s.sf==='rawAcv')return(Number(av)-Number(bv))*s.sd;
+    return String(av).localeCompare(String(bv))*s.sd;
+  });}
+  return rows;
 }
 
-// PATCH SAVE PROPERTY TO ALSO WRITE TO GITHUB
-const _origSaveProperty = savePropertyToHubSpot;
-async function savePropertyToHubSpot(dealId, propName, value, selectEl){
-  // Update in-memory data
-  if(_ghData){
-    ['sql','demo','opp'].forEach(sk=>{
-      (_ghData[sk]||[]).forEach(r=>{ if(r.dealId===String(dealId)){r[propName]=value;} });
+function refreshJourney(sk){
+  const s=FS[sk],rows=filteredRows(sk);
+  const grouped=[];
+  if(!s.ot&&!s.niche&&!s.sf){
+    let last=null;
+    rows.forEach(r=>{
+      if(r.status!==last){
+        const L={'b-sql':'Currently in SQL','b-active':'Currently active','b-opp':'→ Advanced to opportunity',
+          'b-demo':'→ Advanced to pres/demo','b-won':'Closed won','b-lost':'Closed lost','b-hold':'On hold'};
+        const cnt=rows.filter(x=>x.status===r.status).length;
+        grouped.push({_divider:`${L[r.status]||r.status} — ${cnt} deal${cnt!==1?'s':''}`});
+        last=r.status;
+      }
+      grouped.push(r);
     });
+    renderTable(sk,grouped);
+  } else {
+    renderTable(sk,rows);
   }
-  // Call original HS save
-  await _origSaveProperty(dealId, propName, value, selectEl);
-  // Also save to GitHub
-  if(_ghData){
-    const ghOk=await ghSaveData(_ghData);
-    if(ghOk) setDb('ok',`GitHub database updated · just now`);
-  }
+  const cntEl=document.getElementById(`${sk}-fcnt`);
+  if(cntEl)cntEl.textContent=(s.ot||s.niche)?`${rows.length} result${rows.length!==1?'s':''}` : '';
+  renderICPBox(sk,rows);
 }
 
-// PATCH SYNC TO SAVE TO GITHUB AFTER HUBSPOT FETCH
-const _origStartSync = startSync;
-async function startSync(){
-  // Override saveToGitHub hook in sync flow
-  _syncGHSave = async (data) => {
-    const ok = await ghSaveData(data);
-    if(ok){
-      _ghData=data;
-      const t=new Date().toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})+' · '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+' IST';
-      setDb('ok',`GitHub database updated · Synced ${t}`);
-    }
-    return ok;
-  };
-  await _origStartSync();
+// ── ICP SUMMARY ─────────────────────
+const CORE=new Set(['BH-Outpatient Group Practice','BH-Multi-Site Group Practice','BH-CMHC','BH-CCBHC','BH-Family/Community Service','BH-IOP/PHP','BH-Integrated Care','BH-Residential','BH-Residential-PRTF','BH-Virtual Care']);
+const ADJ=new Set(['BH-Private Practice','BH-IDD','BH-Wellness','BH-Population Health/CoCM','BH-SUD','PC-Value-Based Care','Gov-County Health','HS-Child & Family Services','HS-Community Center','HS-Faith-Based Medical Mission']);
+const NCLR={'BH-Outpatient Group Practice':'#1a9e6e','BH-Multi-Site Group Practice':'#1a9e6e','BH-CMHC':'#1a9e6e','BH-CCBHC':'#1a9e6e','BH-Family/Community Service':'#1a9e6e','BH-IOP/PHP':'#1a9e6e','BH-Integrated Care':'#1a9e6e','BH-Residential':'#1a9e6e','BH-Residential-PRTF':'#1a9e6e','BH-Virtual Care':'#1a9e6e','BH-Private Practice':'#e89a1a','BH-IDD':'#e89a1a','BH-Wellness':'#e89a1a','BH-Population Health/CoCM':'#e89a1a','BH-SUD':'#e89a1a','PC-Value-Based Care':'#e89a1a','Gov-County Health':'#e89a1a','HS-Child & Family Services':'#e89a1a','HS-Community Center':'#e89a1a','HS-Faith-Based Medical Mission':'#e89a1a'};
+const SLBL={sql:'SQL stage',demo:'Pres/demo stage',opp:'Opportunity stage'};
+function ntag(n){if(CORE.has(n))return'<span class="itg itg-c">Core ICP</span>';if(ADJ.has(n))return'<span class="itg itg-a">Adjacent</span>';return'<span class="itg itg-o">Outside ICP</span>';}
+
+function renderICPBox(sk,rows){
+  const box=document.getElementById(`${sk}-icpbox`);if(!box)return;
+  const data=rows.filter(r=>!r._divider&&r.icp_niche);
+  if(!data.length){box.innerHTML='';return;}
+  const nc={},oc={};
+  data.forEach(r=>{nc[r.icp_niche]=(nc[r.icp_niche]||0)+1;oc[r.org_type||'Unset']=(oc[r.org_type||'Unset']||0)+1;});
+  const na=Object.entries(nc).sort((a,b)=>b[1]-a[1]);
+  const oa=Object.entries(oc).sort((a,b)=>b[1]-a[1]);
+  const mx=na[0]?.[1]||1,tot=data.length;
+  const cn=data.filter(r=>CORE.has(r.icp_niche)).length;
+  const an=data.filter(r=>ADJ.has(r.icp_niche)).length;
+  const on_=tot-cn-an;
+  box.innerHTML=`
+<div class="icph">
+  <div><div class="icptitle">ICP Niche & Org Type Summary</div><div class="icpsub">${tot} deal${tot!==1?'s':''} with ICP data · ${SLBL[sk]||sk}</div></div>
+  <div class="icpnums">
+    <div class="icpnum"><div class="icpnv" style="color:#1a9e6e">${cn}</div><div class="icpnl" style="color:#0e5c3f">Core ICP</div></div>
+    <div class="icpnum"><div class="icpnv" style="color:#e89a1a">${an}</div><div class="icpnl" style="color:#8a4f0a">Adjacent</div></div>
+    <div class="icpnum"><div class="icpnv" style="color:#9b9b96">${on_}</div><div class="icpnl" style="color:#777770">Outside ICP</div></div>
+  </div>
+</div>
+<div class="icpleg">
+  <div class="icplr"><div class="icpd" style="background:#1a9e6e"></div>Core ICP — primary BH targets (Group Practice, CMHC, CCBHC, Residential, IOP)</div>
+  <div class="icplr"><div class="icpd" style="background:#e89a1a"></div>Adjacent — partial BH fit or related verticals</div>
+  <div class="icplr"><div class="icpd" style="background:#9b9b96"></div>Outside ICP — low priority for blueBriX BH focus</div>
+</div>
+<div class="icpgrid">
+  <div>
+    <div class="icpch">ICP niche breakdown</div>
+    ${na.map(([n,c])=>`<div class="nbr"><div class="nbl" title="${n}">${n}${ntag(n)}</div><div class="nbt"><div class="nbf" style="width:${Math.round(c/mx*100)}%;background:${NCLR[n]||'#9b9b96'};color:#fff">${c}</div></div></div>`).join('')}
+  </div>
+  <div>
+    <div class="icpch">Organization type breakdown</div>
+    ${oa.map(([ot,c])=>`<div class="otr"><span class="otn">${ot}</span><span><span class="otc">${c}</span><span class="otp">${Math.round(c/tot*100)}%</span></span></div>`).join('')}
+  </div>
+</div>`;
 }
-let _syncGHSave=null;
+
+// ── Hook renderTable to also populate drops + ICP box ─
+const _rt0=renderTable;
+renderTable=function(sk,rows){
+  _rt0(sk,rows);
+  populateDrops(sk,rows);
+  renderICPBox(sk,rows.filter(r=>!r._divider));
+};
+// ── Hook applyData to cache live rows ─────────────────
+const _ad0=applyData;
+applyData=function(data){
+  window._liveRows={};
+  ['sql','demo','opp'].forEach(sk=>{if(data[sk])window._liveRows[sk]=data[sk].filter(r=>!r._divider);});
+  _ad0(data);
+};
 
 </script>
 </body>
